@@ -1,15 +1,20 @@
-# E2E PR Gate — smoke tests on all three image families
+# Post-merge E2E — common layer validation
 #
-# Calls the reusable e2e workflow from projectbluefin/testsuite, which boots
-# each OCI image in QEMU/KVM on ubuntu-latest and runs behave smoke tests
-# against a live GNOME session. No self-hosted runners required.
+# Runs AFTER a merge to main (not on PRs). PRs are gated only by the
+# lightweight validate-just and build workflows.
 #
-# All three jobs are required status checks for the merge queue.
+# Uses the projectbluefin/testsuite reusable e2e workflow with the `common`
+# suite, which validates that the files shipped by this repo (dconf defaults,
+# ujust, setup scripts, desktop entries, shell config) are present and
+# functional in the composed Bluefin images.
+#
+# The `common` suite runs in SSH mode from the GHA runner — no full GNOME
+# session needed, so jobs complete in ~15 min vs ~60 min for GUI suites.
 
 name: E2E
 
 on:
-  pull_request:
+  push:
     branches:
       - main
     paths-ignore:
@@ -18,9 +23,6 @@ on:
       - ".gitignore"
       - ".gitattributes"
       - ".github/workflows/**"
-  merge_group:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
@@ -29,18 +31,18 @@ jobs:
     uses: projectbluefin/testsuite/.github/workflows/e2e.yml@main
     with:
       image: ghcr.io/ublue-os/bluefin:lts
-      suites: smoke
+      suites: common
 
   e2e-bluefin-stable:
     name: "E2E — Bluefin Stable"
     uses: projectbluefin/testsuite/.github/workflows/e2e.yml@main
     with:
       image: ghcr.io/ublue-os/bluefin:latest
-      suites: smoke
+      suites: common
 
   e2e-dakota:
     name: "E2E — Dakota"
     uses: projectbluefin/testsuite/.github/workflows/e2e.yml@main
     with:
       image: ghcr.io/projectbluefin/dakota:latest
-      suites: smoke
+      suites: common
