@@ -15,7 +15,7 @@ Files specific to Bluefin
 - GNOME Initial Setup configuration
 
 ### `system_files/shared/` - Shared Configuration
-Files that are shared with [Aurora](https://getaurora.dev) are in [aurorafin-shared](https://github.com/ublue-os/aurorafin-shared), other images can use this as a git submodule or copying or as part of a container build, see below.
+Files shared with [Aurora](https://getaurora.dev) — Aurora maintainers can cherry-pick commits touching this directory. Edit directly here; changes propagate to all Bluefin variants on next build.
 
 This includes:
 - `Just` recipes for system management

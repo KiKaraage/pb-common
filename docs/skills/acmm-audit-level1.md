@@ -140,7 +140,7 @@ These are the active feedback loops that currently arrest error cascades.
 
 | Gate | Trigger | What it catches |
 |---|---|---|
-| `validate.yml` (common) | PR to `main` | just syntax, shellcheck, pre-commit, submodule drift |
+| `validate.yml` (common) | PR to `main` | just syntax, shellcheck, pre-commit |
 | `pre-commit` (common) | commit | JSON/YAML/TOML format, trailing whitespace, merge conflicts, private keys, actionlint |
 | `validate-brewfiles.yaml` (common) | PR to `main` | Brewfile validity |
 | `build.yml` (common) | merge to `main` | OCI build integrity |
@@ -184,13 +184,9 @@ ShellCheck runs in CI but cannot catch semantic logic errors in the channel/tag 
 
 ---
 
-### SO-3.2 · `system_files/shared/` looks editable but is not
+### SO-3.2 · ~~`system_files/shared/` looks editable but is not~~ (resolved)
 
-**File:** `system_files/shared/`  **Skill:** `docs/skills/submodule-boundary.md`
-
-`system_files/shared/` is a **read-only** bind-mount from the `aurorafin-shared` submodule. `system_files/bluefin/` is the editable local path. These two directories look identical at the filesystem level. An AI that edits `system_files/shared/` directly will produce a change that `validate.yml`'s submodule drift check rejects — but only at PR time, not at commit time.
-
-**Existing skill:** `docs/skills/submodule-boundary.md` covers this. Ensure it is the first skill loaded for any `system_files/` task.
+**Resolved 2026-06-04:** `system_files/shared/` is now **directly tracked** in this repo. The `aurorafin-shared` submodule was removed; all files are owned here. Edit `system_files/shared/` directly — there is no longer a submodule drift check. Aurora maintainers cherry-pick commits from this directory as needed.
 
 ---
 

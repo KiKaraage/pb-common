@@ -124,4 +124,3 @@ system_files/
   nvidia/   — editable here, NVIDIA overlay
 bluefin-branding/  — submodule (projectbluefin/branding) — do not edit directly
 ```
-

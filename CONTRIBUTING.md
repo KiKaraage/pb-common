@@ -9,7 +9,7 @@ This repository is the **shared OCI layer** consumed by all Bluefin image varian
 - For Bluefin-specific image changes: [projectbluefin/bluefin](https://github.com/projectbluefin/bluefin)
 - For LTS image changes: [projectbluefin/bluefin-lts](https://github.com/projectbluefin/bluefin-lts)
 - For dakota changes: [projectbluefin/dakota](https://github.com/projectbluefin/dakota)
-- For shared system config: [ublue-os/aurorafin-shared](https://github.com/ublue-os/aurorafin-shared)
+- For shared system config (Aurora-compatible files): edit `system_files/shared/` directly in this repo
 
 ## CI
 

@@ -39,7 +39,7 @@ Agent-specific instruction files (`.github/copilot-instructions.md`, `AGENTS.md`
 | [e2e-ci.md](e2e-ci.md) | Pre/post-merge and promotion-candidate E2E CI for common — composed PR gate, testing-stream smoke/common checks, masked brew setup, quarantined scenarios |
 | [ci-tooling.md](ci-tooling.md) | Pre-commit floating-tag guard, live skill-drift workflow, Renovate OCI digest tracking |
 | [onboarding.md](onboarding.md) | Verified setup commands, correct pip/npm flags, and PR branch targets for all projectbluefin repos |
-| [submodule-boundary.md](submodule-boundary.md) | What is/isn't editable in this repo — `system_files/shared/` is read-only (aurorafin-shared submodule), `system_files/bluefin/` is editable |
+| [submodule-boundary.md](submodule-boundary.md) | What is/isn't editable in this repo — `system_files/shared/` is directly tracked here (edit freely), `system_files/bluefin/` is Bluefin-specific |
 | [dconf-consistency.md](dconf-consistency.md) | GSettings override ↔ dconf lock file parity rules — must edit both files together for locked settings |
 | [image-registry.md](image-registry.md) | ublue-os vs projectbluefin org split for OCI publishing — production images still at `ghcr.io/ublue-os/` |
 | [rollback-helper.md](rollback-helper.md) | `ublue-rollback-helper` TUI state machine — three-way coordinated arrays, LTS/non-LTS branches, registry path derivation, testing guidance |

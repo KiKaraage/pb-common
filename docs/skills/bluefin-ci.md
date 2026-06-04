@@ -437,7 +437,7 @@ Full adversarial review of all 23 workflow files. 6 blocking + 8 non-blocking fi
 
 | Fix | Description |
 |---|---|
-| `validate.yml` replaces `validate-just.yml` in `common` | Adds shellcheck on `ublue-rollback-helper` + aurorafin-shared submodule drift guard |
+| `validate.yml` replaces `validate-just.yml` in `common` | Adds shellcheck on `ublue-rollback-helper`; submodule drift guard removed (aurorafin-shared submodule was inlined 2026-06-04) |
 | `validate-pr` gets 3 new optional inputs | `system-files-shellcheck-glob`, `enable-desktop-file-validate`, `check-submodule-drift` — centralized in `projectbluefin/actions` |
 | bluefin `pr-validation.yml` opts in | `system-files-shellcheck-glob: system_files/**/*.sh`, `enable-desktop-file-validate: true` |
 | `common_signing.feature` added to testsuite common suite | Runtime assertions: signing key hashes, bazaar.preinstall, flatpak-add-fedora-repos.service absence, `ujust` presence, `policy.json` |
