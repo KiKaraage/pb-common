@@ -59,7 +59,7 @@ overlay $BLUEFIN_MERGE="1" $SOURCE="dir":
     ARCHITECTURE="$(sed 's/_/-/g' <<< "$(arch)")"
     EOF
 
-    if [ -e "${ROOTFS_DIR}/system_files" ] ; then 
+    if [ -e "${ROOTFS_DIR}/system_files" ] ; then
         cp -a "${ROOTFS_DIR}/system_files/shared/." "${ROOTFS_DIR}"
         if [ "${BLUEFIN_MERGE}" == "1" ] ; then
             cp -a "${ROOTFS_DIR}/system_files/bluefin/." "${ROOTFS_DIR}"

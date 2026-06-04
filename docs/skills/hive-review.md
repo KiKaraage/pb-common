@@ -61,7 +61,7 @@ P0 Critical (14 total)
 ───────────────────────────────────────
 [x] #1234 — Bluefin won't boot (latest, 5 confirms)
              @alice claimed, 2 days old
-             
+
 [x] #1235 — GNOME doesn't start after update (stable, 7 confirms)
              NO OWNER — escalate to @maintainers
 ```

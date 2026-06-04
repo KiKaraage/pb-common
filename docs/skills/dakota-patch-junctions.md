@@ -265,7 +265,7 @@ git commit -m "fix(kernel): update patch queue for v<X.Y.Z>"
 git -C "$FDSDK" worktree remove /tmp/fdsdk-work
 ```
 
-**Always verify the fsverity fix before dropping the backport patch.**  
+**Always verify the fsverity fix before dropping the backport patch.**
 Kernel v7.0.1–v7.0.6 all ship the broken `ovl_ensure_verity_loaded`. bootc will not boot without it.
 
 ```bash

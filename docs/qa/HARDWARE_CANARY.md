@@ -440,16 +440,16 @@ Promotion workflow waits for canary results:
         -f created='>='$(date -d "$day days ago" +%Y-%m-%d) \
         --jq '.[] | select(.state=="open" and .labels[].name | contains("blocking"))' \
       )
-      
+
       if [[ -n "$RESULTS" ]]; then
         echo "Blocking canary issues found:"
         echo "$RESULTS" | jq -r '.[].title'
         exit 1
       fi
-      
+
       sleep 86400
     done
-    
+
     echo "✅ Canary fleet passed — safe to promote to stable"
 ```
 

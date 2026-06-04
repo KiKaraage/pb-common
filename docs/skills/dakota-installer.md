@@ -83,11 +83,11 @@ cd ~/src/tuna-installer
 
 **`BOOTC_DEMO=1`** — clicking Install runs a 5-second fake progress sequence (9 steps). No fisherman launched, no disk touched. Set by default in `run-dev.sh`.
 
-**Debug log:** `~/.cache/tuna-installer/installer-debug.log`  
+**Debug log:** `~/.cache/tuna-installer/installer-debug.log`
 **Run log:** `/tmp/bootc-installer-run.log`
 
-**After editing `.py` files:** `./run-dev.sh` detects changes and rebuilds automatically.  
-**After editing `.blp` files:** same — blueprint-compiler reruns via ninja.  
+**After editing `.py` files:** `./run-dev.sh` detects changes and rebuilds automatically.
+**After editing `.blp` files:** same — blueprint-compiler reruns via ninja.
 **After editing fisherman Go:** `cd fisherman/fisherman && go build -o /var/tmp/fisherman-test ./cmd/fisherman/`
 
 ## Background Launch (pi limitation)

@@ -204,11 +204,11 @@ on:
 jobs:
   build-lts:
     # ...
-  
+
   post-merge-tests:  # Gate 1
     needs: build-lts
     uses: ./.github/workflows/post-merge-e2e.yml
-  
+
   stability-gate:
     needs: post-merge-tests
     # Runs human review + bonedigger API check
