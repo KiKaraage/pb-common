@@ -35,7 +35,7 @@ testsuite gates `:latest` promotion in all three image repos.
 | `claimed` | Comment `/claim` — assigned, removed from pool |
 | `done` | Fix shipped + 3× `ujust verify` or maintainer override |
 
-No PR activity in 7 days returns a claimed issue to the queue automatically.
+No PR activity in 7 days: return the claim manually (`/unclaim`) — automation pending (see issue #432).
 
 ### PR comment policy
 
@@ -66,6 +66,7 @@ system_files/
 .github/workflows/
   build.yml                # Build + push on merge to main
   e2e.yml                  # Post-merge e2e against bluefin, bluefin-lts, dakota
+  release.yml              # Monthly versioned OCI release (1st of month, also workflow_dispatch)
   validate.yml             # PR gate: just check, pre-commit, shellcheck, submodule drift
   validate-brewfiles.yaml  # PR gate: Brewfile validation
 ```
