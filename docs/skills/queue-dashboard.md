@@ -5,6 +5,16 @@ description: "PR review and merge queue workflow for projectbluefin/common — r
 
 # Queue Dashboard — projectbluefin/common
 
+## When asked to "merge PRs"
+
+The intent is: **fix any blockers and land the PR**. Do not just review and leave comments.
+
+1. Triage the PR using the table below
+2. Fix the issue (rebase, correct code, update docs) — don't just comment
+3. Merge immediately with `gh pr merge <N> --squash --admin`
+
+Do **not** wait for approval count to tick up or for non-required checks to pass. `--admin` bypasses all of that. Reserve skipping for genuine design objections or explicit user-requested holds.
+
 ## Merge ruleset (`main-review-required-with-renovate-bypass`)
 
 | Setting | Value |

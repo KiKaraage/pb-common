@@ -88,6 +88,18 @@ required for a PR to merge — triagers count for `docs/**` and `*.md` paths.
 | `bluefin-lts` | Branch protection on `main` | 1 |
 | `dakota` | Branch protection on `main` | 1 |
 
+## Documentation changes — push directly to main
+
+Changes to `docs/` and `docs/skills/` in this repo do **not** need a PR. Push directly to `main`:
+
+```bash
+git add docs/...
+git commit -m "docs: ..."
+git push origin main
+```
+
+This includes skill updates, INDEX.md, and any other `docs/` content. Do not open a PR for docs-only work in `projectbluefin/common`.
+
 ## Lifecycle automation (bonedigger)
 
 | Repo | Workflow | State |
