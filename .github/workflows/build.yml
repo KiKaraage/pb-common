@@ -40,17 +40,17 @@ jobs:
         id: generate-tags
         shell: bash
         run: |
-          echo "sha_short=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+          echo "sha_short=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
           alias_tags=()
           # Only perform the follow code when the action is spawned from a Pull Request
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             alias_tags+=("pr-${{ github.event.number }}")
           else
             # The following is run when the timer is triggered or a merge/push to main
-            echo "date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+            echo "date=$(date +%Y%m%d)" >> "$GITHUB_OUTPUT"
             alias_tags+=("latest")
           fi
-          echo "alias_tags=${alias_tags[*]}" >> $GITHUB_OUTPUT
+          echo "alias_tags=${alias_tags[*]}" >> "$GITHUB_OUTPUT"
 
       - name: Build Image
         id: build_image
@@ -96,7 +96,7 @@ jobs:
       - name: Sign container image
         if: github.event_name != 'pull_request'
         run: |
-          cosign sign -y --key env://COSIGN_PRIVATE_KEY ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}@${TAGS}
+          cosign sign -y --key env://COSIGN_PRIVATE_KEY "${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}@${TAGS}"
         env:
           TAGS: ${{ steps.push.outputs.digest }}
           COSIGN_EXPERIMENTAL: false

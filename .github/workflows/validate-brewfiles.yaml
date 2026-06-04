@@ -25,7 +25,7 @@ jobs:
           echo "PASS" > "$STATUS_FILE"
 
           while IFS= read -r -d '' brewfile ; do
-            echo "::group:: ===$(basename $brewfile)==="
+            echo "::group:: ===$(basename "$brewfile")==="
 
             grep -E -e "^tap" "$brewfile" > taps.Brewfile || true
             echo "Syncing taps..."
@@ -38,6 +38,7 @@ jobs:
             ENTRIES=$(printf "%s\n%s" "$FORMULAS" "$CASKS" | grep -v '^\s*$' || true)
 
             if [ -n "$ENTRIES" ]; then
+              # shellcheck disable=SC2016
               echo "$ENTRIES" | xargs -P 8 -I {} bash -c '
                 TYPE=$(echo "{}" | cut -d" " -f1)
                 NAME=$(echo "{}" | cut -d" " -f2)
