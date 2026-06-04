@@ -96,3 +96,22 @@ Changes to shared system config must go to `ublue-os/aurorafin-shared` in an ups
 ## Scope warning
 
 Changes here flow into ALL downstream Bluefin variants at next build. A broken `system_files/shared/` change will break bluefin, bluefin-lts, AND dakota simultaneously. Test locally before pushing.
+
+## Skill routing
+
+Load the relevant skill doc before making changes in these areas.
+
+| Task | Load first |
+|---|---|
+| Any `system_files/` edit | [`docs/skills/submodule-boundary.md`](docs/skills/submodule-boundary.md) |
+| GNOME settings / dconf | [`docs/skills/dconf-consistency.md`](docs/skills/dconf-consistency.md) |
+| Image refs / registry paths | [`docs/skills/image-registry.md`](docs/skills/image-registry.md) |
+| `ublue-rollback-helper` changes | [`docs/skills/rollback-helper.md`](docs/skills/rollback-helper.md) |
+| CI / GitHub Actions | [`docs/skills/ci-tooling.md`](docs/skills/ci-tooling.md) |
+| E2E test changes | [`docs/skills/e2e-ci.md`](docs/skills/e2e-ci.md) |
+| Governance / CODEOWNERS | [`docs/skills/governance.md`](docs/skills/governance.md) |
+| PR queue / merge decisions | [`docs/skills/queue-dashboard.md`](docs/skills/queue-dashboard.md) |
+| Hive monitoring | [`docs/skills/hive-review.md`](docs/skills/hive-review.md) |
+| Onboarding / dev setup | [`docs/skills/onboarding.md`](docs/skills/onboarding.md) |
+
+For the full factory operating model, see [`docs/factory/README.md`](docs/factory/README.md).
