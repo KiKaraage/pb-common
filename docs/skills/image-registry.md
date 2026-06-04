@@ -39,4 +39,7 @@ bluefin repo. `IMAGE_VENDOR` is set from the `IMAGE_VENDOR` build arg (currently
 in bluefin's Justfile — but this sets the *metadata* vendor, not the *publishing* registry).
 The production publishing still goes to `ublue-os` org via the build workflow secrets.
 
+`validate.yml` includes a guard that fails if workflow files or `ublue-rollback-helper`
+reference `ghcr.io/projectbluefin/bluefin`, `aurora`, or `bazzite`.
+
 Tracked: #468

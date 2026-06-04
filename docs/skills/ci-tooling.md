@@ -4,9 +4,9 @@
 
 **Scope:** org-wide pre-commit hook in all `projectbluefin` repos (`common`, `bluefin`, `bluefin-lts`, `dakota`, `knuckle`, `actions`)
 
-The `no-floating-action-tags` hook blocks third-party GitHub Actions from being committed with floating refs.
+The `no-floating-action-tags` hook blocks GitHub Actions from being committed with floating refs in workflow files.
 
-**Regex:** `uses:(?!.*projectbluefin/).*@(main|master|latest|v[0-9])`
+**Regex:** `uses:.*@(main|master|latest|v[0-9])`
 
 ### What it blocks
 
@@ -25,23 +25,11 @@ uses: actions/checkout@main
 uses: taiki-e/install-action@latest
 ```
 
-### Why `projectbluefin/` is exempt
-
-The negative lookahead intentionally skips `projectbluefin/*` actions because the org uses managed floating tags for its own automation:
-
-- `projectbluefin/actions@v1` is an intentional managed floating tag for the org's shared composite action library
-- `projectbluefin/bonedigger@main` is an intentional managed floating ref for the internal lifecycle bot
-
-Those refs are advanced deliberately by project maintainers. The guard is specifically for third-party actions that must be SHA-pinned.
-
 ### Coverage
 
-The hook scans both:
+The hook scans `.github/workflows/` YAML files.
 
-- `.github/workflows/*.yml`
-- composite `action.yml` files
-
-This closes the loophole where a workflow might be pinned correctly but a local composite action could still introduce a floating third-party dependency.
+Any workflow `uses:` line pointing at `@main`, `@master`, `@latest`, or a floating major tag like `@v4` is rejected.
 
 ### Renovate vs pre-commit
 

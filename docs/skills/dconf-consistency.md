@@ -38,15 +38,13 @@ existing files — it changes the merge order.
 
 ## Validation
 
-There is currently no automated pre-merge consistency check (tracked: #470).
-Until one exists, manually verify both files when making changes:
+`validate.yml` now includes an automated pre-merge parity check for `01-bluefin-locked-settings` against the `.override` files in `system_files/bluefin/usr/share/glib-2.0/schemas/`.
+
+When changing locked settings, still verify locally when possible:
 
 ```bash
 # Check the override compiles (requires glib2 tools)
 glib-compile-schemas --strict system_files/bluefin/usr/share/glib-2.0/schemas/
-
-# Check no lock file entry references a nonexistent key
-# (manual cross-reference for now)
 ```
 
 The E2E `common` suite validates dconf state post-merge.
