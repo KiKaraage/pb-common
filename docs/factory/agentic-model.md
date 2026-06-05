@@ -7,6 +7,7 @@ Deep reference for label taxonomy, branch targets, and sensitive paths. **Entry 
 - **AGENTS.md is the per-repo contract.** Read it first. Every repo has one.
 - **One agentic whole.** Changes that touch common affect bluefin, bluefin-lts, and dakota. Think before merging.
 - **No castrojo fork.** Agents push branches directly to projectbluefin repos and open PRs with `gh pr create --repo projectbluefin/<repo>`.
+- **Always open a PR — never push directly to a protected branch.** PRs enter the `pr/needs-review` queue and require `lgtm` from a human before merging. Branch protection bypass is not agent-permitted, even when the push technically succeeds.
 - **Attribution on every AI commit — both trailers required (CI-enforced in `validate.yml`):**
   ```
   Assisted-by: <Model> via GitHub Copilot

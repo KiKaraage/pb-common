@@ -150,6 +150,7 @@ When in doubt, post nothing.
   ```
 - Max 4 open PRs at a time per agent
 - No WIP PRs
+- **Never push directly to a protected branch.** Always open a PR. PRs enter the human review queue (`pr/needs-review`) and require `lgtm` from a human before merging. This applies to `common/main` too — branch protection bypass is not agent-permitted.
 
 ## Session start — mandatory
 
