@@ -58,7 +58,7 @@ this before making changes.
 |---|---|---|
 | Nightly LTS/GDX e2e reliability | testsuite#372, testsuite#373 | CI desensitization — agents dismiss real failures |
 | Installability gate absent | common#423 | Broken installer paths reach testing→stable |
-| Migration test manual-only | testsuite#232 (queue/hold) | bootc upgrade regressions undetected |
+| Migration test manual-only | testsuite#232 (status/hold) | bootc upgrade regressions undetected |
 | Bonedigger crash signal unwired | common#424 | Panic in lifecycle bot doesn't block promotion |
 
 ---

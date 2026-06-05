@@ -34,7 +34,7 @@ factory** — must be the first thing any agent reads. `common` is the org brain
 **Remaining blockers to Level 3:**
 - Nightly CI desensitization (LTS + GDX suites persistently red) — human blocked
 - Installability gate not wired before `testing → stable` — human blocked (#423)
-- Migration test not auto-triggered (queue/hold) — human blocked (testsuite#232)
+- Migration test not auto-triggered (status/hold) — human blocked (testsuite#232)
 - Lifecycle bot parity: `bonedigger` SHA-pin inconsistent across org — intentional, documented
 
 ---
@@ -135,12 +135,12 @@ maintainer coordination. See `docs/skills/ci-tooling.md`.
 
 ---
 
-### BS-1.19 · `migration-test.yml` blocked by `queue/hold`
+### BS-1.19 · `migration-test.yml` blocked by `status/hold`
 
 **Repo:** testsuite  **Issue:** testsuite#232
 
 `migration-test.yml` has no `schedule:` trigger — manual only. The issue to add one
-is `queue/hold` pending zstd:chunked stability. Migration regressions (broken `bootc upgrade`
+is `status/hold` pending zstd:chunked stability. Migration regressions (broken `bootc upgrade`
 paths) are not auto-detected.
 
 **Constraint rule:** Changes to bootc version pins, `ostree-ext`, image base digests,
@@ -198,7 +198,7 @@ adding overrides.
 - **No full installability gate** before `testing → stable` — `common` has weekly smoke/common
   but no installer/bootc-install gate ([#423](https://github.com/projectbluefin/common/issues/423))
 - **No bonedigger crash signal** wired into promotion decisions ([#424](https://github.com/projectbluefin/common/issues/424))
-- **Migration upgrade path testing** is manual-only; adding a schedule is `queue/hold` (testsuite#232)
+- **Migration upgrade path testing** is manual-only; adding a schedule is `status/hold` (testsuite#232)
 - **Nightly LTS/GDX e2e degraded** — testsuite#372, #373 keep suites persistently red
 
 ---
@@ -220,7 +220,7 @@ adding overrides.
 | 2-human production gate | ✅ | ✅ | ✅ | ✅ | — | — |
 | CODEOWNERS active | ✅ | ✅ | ✅ | ✅ | — | — |
 | docs/skills/ populated | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Migration-test auto-trigger | — | — | — | — | — | ❌ (queue/hold) |
+| Migration-test auto-trigger | — | — | — | — | — | ❌ (status/hold) |
 | Consumer contract verified | — | — | — | — | ✅ PR#83 | — |
 
 ¹ `bonedigger` has no versioned releases; `@main` is intentional. Inline comments added to both repos — do not pin to SHA without maintainer coordination.
@@ -236,7 +236,7 @@ Items below are open. When an item is fixed, delete it from this list.
 | P0 | testsuite#373 | testsuite | ZFS `/var` breaks lts nightly | LTS CI signal |
 | P0 | testsuite#372 | testsuite | gdx:stream10 common suite broken | GDX CI signal |
 | P0 | [#409](https://github.com/projectbluefin/common/issues/409) | org-wide | lifecycle bot unification | all agent operations |
-| P1 | testsuite#232 | testsuite | migration-test queue/hold | upgrade regression detection |
+| P1 | testsuite#232 | testsuite | migration-test status/hold | upgrade regression detection |
 | P1 | [#424](https://github.com/projectbluefin/common/issues/424) | common | bonedigger crash/panic → promotion gate | promotion quality |
 | P1 | [#420](https://github.com/projectbluefin/common/issues/420) | common | regression contract definition | stream parity |
 | P1 | [#423](https://github.com/projectbluefin/common/issues/423) | common | installability gate | promotion quality |

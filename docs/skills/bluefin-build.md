@@ -96,7 +96,7 @@ gh search issues --label "hive/p0" --owner projectbluefin --state open
 gh search issues --label "hive/p1" --owner projectbluefin --state open
 
 # Ready for agent pickup
-gh search issues --label "queue/agent-ready" --owner projectbluefin --state open
+gh search issues --label "status/queued" --owner projectbluefin --state open
 
 # Live Hive snapshot with formation health
 just hive    # or: ~/src/hive-status --watch
@@ -107,11 +107,11 @@ just hive    # or: ~/src/hive-status --watch
 | `hive/p0` | 🔴 `#d93f0b` | Release blocker — fix before next promotion |
 | `hive/p1` | 🟠 `#e4a117` | Must land this cycle |
 | `priority/p0`, `priority/p1`, `priority/p2` | — | Static repo backlog priority (set once, not reset) |
-| `queue/agent-ready` | — | Ready for agent pickup |
-| `queue/claimed` | — | Agent is actively working this |
+| `status/queued` | — | Ready for agent pickup |
+| `status/claimed` | — | Agent is actively working this |
 | `agent/blocked` | — | Agent blocked — needs human |
 
-**`hive/*` vs `priority/*` vs bonedigger `priority/high`/`priority/critical`**: These are three distinct families. An issue can carry labels from all three. `hive/*` is reset each cycle by Hive agents. `priority/*` is the repo's backlog ordering. Bonedigger `priority/high`/`priority/critical` is the bonedigger lifecycle. Never substitute one for another.
+**`hive/*` vs `priority/*` vs bonedigger `priority/p1`/`priority/p0`**: These are three distinct families. An issue can carry labels from all three. `hive/*` is reset each cycle by Hive agents. `priority/*` is the repo's backlog ordering. Bonedigger `priority/p1`/`priority/p0` is the bonedigger lifecycle. Never substitute one for another.
 
 ---
 

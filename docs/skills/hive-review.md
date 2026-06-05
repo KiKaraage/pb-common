@@ -194,7 +194,7 @@ Every issue filed via `ujust report` starts here. bonedigger:
 1. Collects diagnostics (OS version, logs, hardware info)
 2. **Auto-assigns P0/P1** based on `ujust confirm` count
 3. Posts diagnosis card (read this first!)
-4. Adds `needs-triage` label (you remove via `/approve`)
+4. Adds `status/triage` label (you remove via `/approve`)
 
 See [bonedigger-overview](./bonedigger-overview.md) for mechanics.
 

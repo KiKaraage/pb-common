@@ -201,6 +201,6 @@ After each improvement session:
 1. Update the "Known Gaps" table above with closed items and new discoveries
 2. Update `docs/factory/README.md` "Open gaps" section
 3. Update `docs/skills/acmm-audit-level2.md` for closed blindspot items
-4. File issues for new gaps (`queue/agent-ready` label if automatable)
+4. File issues for new gaps (`status/queued` label if automatable)
 
 This skill is the memory of the improvement loop. Keep it current.

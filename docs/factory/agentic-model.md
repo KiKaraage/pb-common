@@ -74,7 +74,7 @@ Overlays (can coexist with any stage): `status/hold`, `agent/blocked`
 | `source:ujust-report` | Filed via `ujust report` |
 
 ### Labels being retired (do not use for new issues)
-`bug`, `type/bug`, `type/feature`, `kind:agent-donation`, `needs-human/agent-ready`, `agent/claimed`, `priority/critical`, `priority/high`, `size:*`, `copilot-ready`, `hold` — see migration table in `label-workflow.md`.
+`bug`, `type/bug`, `type/feature`, `flow/agent-donation`, `needs-human/agent-ready`, `agent/claimed`, `priority/p0`, `priority/p1`, `size:*`, `copilot-ready`, `hold` — see migration table in `label-workflow.md`.
 
 ## PR policy
 
