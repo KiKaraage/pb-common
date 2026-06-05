@@ -16,13 +16,15 @@ Load with: `cat ~/src/skills/bluefin-renovate/SKILL.md`
 
 ## When to Use
 
-- Reviewing or merging an open Renovate PR in any Bluefin repo
-- Configuring Renovate behavior in `castrojo/bluefin-renovate-config`
+- A **major** version Renovate PR did not automerge and needs review
+- Configuring Renovate behavior in `projectbluefin/renovate-config`
 - Understanding why Renovate did or did not open a PR
 - Checking grouping, scheduling, or version-bump strategy
+- Debugging a Renovate config validation error
 
 ## When NOT to Use
 
+- **Merging digest/pin/patch/minor Renovate PRs** — these automerge when CI passes; do not touch them
 - Manually bumping a dependency version yourself (let Renovate handle it)
 - General package additions — use `cat ~/src/skills/bluefin-packages/SKILL.md`
 - CI failures caused by a Renovate PR — use `cat ~/src/skills/bluefin-ci/SKILL.md`
@@ -32,12 +34,30 @@ Load with: `cat ~/src/skills/bluefin-renovate/SKILL.md`
 Renovate scans repos for outdated dependencies and opens PRs automatically.
 Config lives at `castrojo/renovate-config` (upstream: `projectbluefin/renovate-config`).
 
-## Renovate PR Workflow — projectbluefin/bluefin
+## Automerge Behavior (org-wide)
+
+Configured in `projectbluefin/renovate-config` → `org-inherited-config.json`:
+
+| Update type | Automerge? |
+|---|---|
+| `digest` | ✅ Yes — merges when CI passes |
+| `pin` | ✅ Yes — merges when CI passes |
+| `patch` | ✅ Yes — merges when CI passes |
+| `minor` | ✅ Yes — merges when CI passes |
+| `major` | ❌ No — requires human/agent review |
+
+Schedule: Renovate runs **Mondays 00:00–03:00 UTC** only.
+`rebaseWhen: "never"` — Renovate will not rebase PRs when the base branch updates.
+
+**Agents: do not spend tokens merging digest/pin/patch/minor PRs. They handle themselves.**
+
+## Renovate PR Workflow — major updates only
 
 1. Renovate opens a PR against `testing` (configured via `baseBranchPatterns: ["testing"]` in `.github/renovate.json5`)
 2. CI runs — `validate` check must pass
-3. Approve with `gh pr review $N --approve`
-4. Squash-merge directly: `gh pr merge $N --squash` (no merge queue on `testing`)
+3. Review breaking changes manually
+4. Approve with `gh pr review $N --approve`
+5. Squash-merge directly: `gh pr merge $N --squash` (no merge queue on `testing`)
 
 ⚠️ **If Renovate PRs are targeting `main` instead of `testing`**, the `baseBranchPatterns` field in `.github/renovate.json5` is wrong. Fix it:
 ```json5
@@ -61,21 +81,28 @@ gh api graphql -f query="mutation { dequeuePullRequest(input: { id: \"${node_id}
 
 ## Renovate Config Repo
 
-`~/src/bluefin-renovate-config` — castrojo fork of `projectbluefin/renovate-config`
+`~/src/renovate-config` — clone of `projectbluefin/renovate-config`
 
-Changes to Renovate behavior go here. Use fork → upstream PR workflow.
+This is where all org-wide Renovate behavior lives. Clone directly (no fork needed for maintainers):
+```bash
+git clone https://github.com/projectbluefin/renovate-config.git ~/src/renovate-config
+```
+
+Changes to org-wide behavior go in `org-inherited-config.json`. Repo-specific overrides stay in the repo's own `renovate.json` or `.github/renovate.json5`.
 
 ## Grouping and Scheduling
 
 Renovate groups minor/patch updates. Major version bumps get separate PRs.
-Schedule configured in `renovate-config` — check there for current cadence.
+- **Schedule:** weekly, Monday 00:00–03:00 UTC (`"* 0-3 * * 1"`)
+- **Automerge:** digest/pin/patch/minor auto-land when CI passes (org-wide default)
+- **Rebase:** never — PRs are not rebased on base-branch updates
 
 ## ⛔ Lint Before Every Commit (Hard Rule)
 
 Any time you touch `org-inherited-config.json`, `renovate-config.json`, or `renovate.json`, run the validator locally **before** committing:
 
 ```bash
-cd ~/src/bluefin-renovate-config
+cd ~/src/renovate-config
 npx --yes renovate-config-validator --strict org-inherited-config.json
 ```
 
