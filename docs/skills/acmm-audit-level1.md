@@ -5,7 +5,7 @@ description: "ACMM Level 1 audit — blindspots, feedback mechanisms, structural
 
 # ACMM Level 1 Audit — Project Bluefin Factory
 
-**Initial date:** 2026-06-04  **Last revised:** 2026-06-04 (follow-up pass)
+**Initial date:** 2026-06-04  **Last revised:** 2026-06-05 (third-pass audit)
 **Framework:** AI Codebase Maturity Model (arXiv:2604.09388)
 **Level:** 1 (Assisted) → bridge to Level 2 (Instructed)
 **Scope:** `common`, `bluefin`, `bluefin-lts`, `dakota`, `actions`, `testsuite`
@@ -629,5 +629,223 @@ Changes from initial pass: bonedigger ✅ for bluefin-lts (was ❌), skill-drift
 | P2 | new | actions | consumer contract machine test | aurora/bazzite safety |
 | P2 | new | all bonedigger repos | @main exemption comments | agent confusion |
 | P2 | [#403](https://github.com/projectbluefin/common/issues/403) | common | factory/README.md | org entry point |
+| P2 | [#404](https://github.com/projectbluefin/common/issues/404) | org-wide | infra parity epic | agent reliability |
+| P2 | [#405](https://github.com/projectbluefin/common/issues/405) | org-wide | QA epic | quality gates |
+
+---
+
+## 10. Third-Pass Audit — 2026-06-05
+
+**Scope:** Full re-verification of all prior findings + new structural investigation of `testsuite`, `actions`, and nightly CI signal quality.
+
+---
+
+### State Changes Since 2026-06-04 (What Closed)
+
+The following items from the first two passes are now resolved:
+
+| Finding | Resolution |
+|---|---|
+| BS-1.13 · `pr-e2e.yml` e2e job `if: false` | ✅ **RESOLVED** — `if: false` guard removed. Pre-merge e2e gate for `common` PRs is now fully active, running the `common` test suite against composed images. |
+| BS-1.15 · `common` bonedigger.yml used floating `@main` | ✅ **RESOLVED** — `common/bonedigger.yml` now pins to SHA `743f56403af826b148d2841524faa1edb68a4538`. `bluefin/bonedigger.yml` also SHA-pinned (same SHA). |
+| BS-1.11 · Dakota missing `no-floating-action-tags` | ✅ **RESOLVED** — `dakota/.pre-commit-config.yaml` now includes the `no-floating-action-tags` pygrep hook, matching the pattern in `common`, `bluefin`, and `bluefin-lts`. |
+| BS-1.10 · lifecycle bot absent from Dakota | ✅ **RESOLVED** — `dakota/.github/workflows/bonedigger.yml` now exists and runs the lifecycle state machine. |
+| R-5 · `bluefin/docs/skills/copr-security.md` | ✅ **RESOLVED** — File exists and is populated. |
+| R-6 · `bluefin-lts/docs/skills/centos-vs-fedora.md` | ✅ **RESOLVED** — File exists and is populated. |
+| R-7 · `dakota/docs/skills/not-bluefin.md` | ✅ **RESOLVED** — File exists and is linked from `docs/SKILL.md`. |
+| R-8 · `actions/docs/skills/consumer-validation.md` | ✅ **RESOLVED** — File exists with blast-radius table and step-by-step protocol. |
+| R-9 supplement · `bluefin-lts` post-merge e2e | ✅ **RESOLVED** — `bluefin-lts/.github/workflows/post-merge-e2e.yml` now exists, running `smoke,common` suites against `lts-testing` after every main-branch build. |
+| common issue #487 · Renovate paused due to invalid `packageRules` | ✅ **RESOLVED** — Issue #487 is closed (state: done). `common/renovate.json` is functional. |
+
+---
+
+### New Blindspots (BS-1.17 through BS-1.21)
+
+#### BS-1.17 · Nightly e2e failures create CI desensitization — agents lose signal clarity
+
+**Repos:** testsuite, bluefin-lts  **Issues:** [testsuite#372](https://github.com/projectbluefin/testsuite/issues/372), [testsuite#373](https://github.com/projectbluefin/testsuite/issues/373)
+
+Two persistent nightly e2e failures are currently open:
+- `testsuite#373` — `bluefin:lts` `smoke/common/developer` suites fail because ZFS on `/var` prevents the test harness
+- `testsuite#372` — `gdx:stream10` common suite fails — Homebrew missing, `LockLayerEntry` COPR error
+
+When nightly CI is persistently red, agents cannot distinguish a new regression from the known-broken state. The correct response to a failing CI run becomes "this is probably the known failure" — which is exactly how real regressions ship undetected. The hive scanner advisory section already flags this pattern at CRITICAL level for related issues (bootc-installer nvidia defaults, disk.py coverage).
+
+**Required constraint rule:** "If nightly e2e CI is red, do NOT assume it is the known failure. Check `testsuite` issues #372 and #373 for current known-broken state first. Any new CI failure in `bluefin:lts` or `gdx:stream10` suites must be explicitly compared against these issues before being dismissed."
+
+---
+
+#### BS-1.18 · `bonedigger.yml` in `bluefin-lts` and `dakota` still float `@main` — inconsistent with policy
+
+**Files:** `bluefin-lts/.github/workflows/bonedigger.yml`, `dakota/.github/workflows/bonedigger.yml`
+
+`common` and `bluefin` both pin bonedigger to SHA `743f56403af826b148d2841524faa1edb68a4538`. `bluefin-lts` and `dakota` still call `lifecycle.yml@main`. The `no-floating-action-tags` hook exempts `projectbluefin/` refs — so the hook won't catch this — but the inconsistency creates the same "agent will fix this" risk described in BS-1.15. An agent doing a parity-pass audit across the org will see `@main` in two repos and will attempt to "fix" it. If they pin to the wrong SHA or the SHA is stale, lifecycle automation breaks.
+
+**Required constraint rule:** "The `no-floating-action-tags` hook exempts `projectbluefin/` refs. `bluefin-lts/bonedigger.yml` and `dakota/bonedigger.yml` intentionally use `@main`. Do NOT convert to SHA unless coordinating with maintainers to agree on the correct pin. See `docs/skills/ci-tooling.md`."
+
+---
+
+#### BS-1.19 · `migration-test.yml` blocked by `queue/hold` — schedule R-13 is stalled
+
+**Repo:** testsuite  **Issue:** [testsuite#232](https://github.com/projectbluefin/testsuite/issues/232)
+
+The `migration-test.yml` workflow exists in `testsuite/.github/workflows/` but has no `schedule:` trigger (only `workflow_dispatch:`). The issue to add the trigger (R-13) references testsuite#232, which is labeled `queue/hold` — meaning agents cannot work on it. Migration regressions (broken `bootc upgrade` paths from `ublue-os/bluefin` → `projectbluefin/bluefin`) are still not auto-detected. A change to bootc version pinning or image base digests carries invisible migration risk.
+
+**Required constraint rule:** "Migration upgrade path testing is NOT auto-triggered. `migration-test.yml` runs only on `workflow_dispatch`. Changes to bootc version pins, `ostree-ext`, image base digests, or OCI layer compression carry invisible migration risk. Check with maintainers before promoting."
+
+---
+
+#### BS-1.20 · Testsuite step file coverage gap — four suites have zero unit tests
+
+**Repo:** testsuite  **Issue:** [testsuite#371](https://github.com/projectbluefin/testsuite/issues/371)
+
+Issue #371 identifies that `hardware/`, `nvidia/`, `flatcar/`, and `bazzite/` step files have no unit test coverage. The `behave --dry-run` PR gate catches step-phrase mismatches, but it does not catch logic errors inside step implementations. An agent adding test scenarios to these suites has no unit-level safety net — a broken step will be silently undetected until a full e2e run (which requires ghost runner access).
+
+**Required constraint rule:** "When authoring steps for `hardware`, `nvidia`, `flatcar`, or `bazzite` suites, note that zero unit tests exist for these step files (testsuite#371). `behave --dry-run` is your only local gate. Test phrasing carefully; step logic errors won't be caught until live e2e."
+
+---
+
+#### BS-1.21 · `bluefin-lts` lacks a `renovate.json` config file on disk
+
+**Repo:** bluefin-lts
+
+`bluefin-lts` has `renovate-automerge.yml` and `renovate.yml` GitHub Actions workflows, but no `renovate.json` (or `.github/renovate.json`) config file in the repo. Renovate infers configuration from the org-level `projectbluefin/renovate-config` extends chain when the local file is absent. An agent adding packages or pinning versions in `bluefin-lts` may assume Renovate automerge behavior is identical to `common` and `bluefin`, which each have explicit local configs. If the org-level config is ever changed or if repo-level overrides are needed, the absence of a local file means the change silently affects bluefin-lts differently.
+
+**Required constraint rule:** "In `bluefin-lts`, Renovate config is inherited from the org-level `projectbluefin/renovate-config` — there is no local `renovate.json`. Repo-specific Renovate overrides cannot be added without first creating the file."
+
+---
+
+### Updated Feedback Mechanisms (Section 2 Third-Pass Supplement)
+
+| Gate | Status Change | Notes |
+|---|---|---|
+| `pr-e2e.yml` e2e job (common) | ✅ **NOW ACTIVE** (was ❌ `if: false`) | Pre-merge `common` suite now runs against composed image for all PRs to `main` |
+| `post-merge-e2e.yml` (bluefin-lts) | ✅ **NEW** | Post-merge smoke+common on `lts-testing` after every main-branch build |
+| `bonedigger.yml` (dakota) | ✅ **NEW** | Issue lifecycle state machine now active in dakota |
+| nightly `testsuite` runs | ⚠️ **DEGRADED** | Issues #372, #373 keep `lts` and `gdx:stream10` suites persistently red |
+| `migration-test.yml` (testsuite) | ❌ **STILL MANUAL** | No `schedule:` trigger; issue #232 is `queue/hold` |
+
+---
+
+### Updated Structural Obstacles (Section 3 Third-Pass Supplement)
+
+#### SO-3.10 · Nightly CI noise hides real regressions in `lts` and `gdx` variants
+
+**Issues:** testsuite#372, testsuite#373
+
+With `bluefin:lts` ZFS and `gdx:stream10` common suites persistently failing, the effective e2e coverage for LTS and GDX variants is degraded. An agent cannot use nightly CI output as reliable signal for these variants. The post-merge e2e for `bluefin-lts` (recently added) is likely also impacted by the ZFS issue.
+
+**Structural risk:** Agents doing LTS work will dismiss red CI as "known failure" — which is exactly the failure mode that allowed the original nightly breakage to persist.
+
+---
+
+#### SO-3.11 · `bonedigger.yml` SHA-pinning inconsistency across the org creates a parity trap
+
+Four repos use bonedigger. Two are SHA-pinned (`common`, `bluefin`). Two float `@main` (`bluefin-lts`, `dakota`). An agent doing a "no-floating-action-tags compliance pass" will see the `@main` refs in bluefin-lts and dakota and attempt to pin them — but the `no-floating-action-tags` hook intentionally exempts `projectbluefin/` refs, so the hook would pass even with the exemption comment removed. The inconsistency itself is the trap: the org has no documented policy for *which* `projectbluefin/` internal refs should be SHA-pinned versus floating. The current state (two SHA, two floating) appears inconsistent but may be intentional.
+
+**Fix needed:** Document in `docs/skills/ci-tooling.md` the policy for when `projectbluefin/` internal refs *should* be SHA-pinned (answer: when the upstream does versioned releases; bonedigger does not, so `@main` is correct). Add inline comments to `bluefin-lts/bonedigger.yml` and `dakota/bonedigger.yml` explaining the policy.
+
+---
+
+### Recommendations for Level 2 — Third-Pass Additions
+
+#### R-16 · Add inline exemption comments to `bluefin-lts` and `dakota` `bonedigger.yml` (P2)
+
+**Target:** `bluefin-lts/.github/workflows/bonedigger.yml`, `dakota/.github/workflows/bonedigger.yml`
+
+Add the comment from R-14 (first recommended in second-pass audit but not yet applied to `bluefin-lts` and `dakota`):
+
+```yaml
+# @main is intentional: projectbluefin/bonedigger has no versioned releases.
+# projectbluefin/ refs are managed floating tags, exempt from the
+# no-floating-action-tags hook. See docs/skills/ci-tooling.md.
+```
+
+---
+
+#### R-17 · Fix testsuite nightly e2e failures to restore CI signal quality (P0 — hive operational)
+
+**Target:** testsuite  **Issues:** testsuite#372, testsuite#373
+
+The hive scanner already tracks these at advisory level. They are P0 operational because persistent red nightly CI degrades the entire agent feedback loop for LTS and GDX variants. Fixing the ZFS `/var` blocker (issue #373) is the higher-priority item since it affects `bluefin-lts` directly.
+
+---
+
+#### R-18 · Add `skill-drift.yml` to `testsuite` (P2)
+
+**Target:** `testsuite`
+
+`testsuite` is the only non-infra repo in the factory without `skill-drift.yml`. As the repo becomes more agent-maintained (GNOME 50 crowdsourcing, `@future` scenario coverage), test changes that introduce new patterns should prompt skill file updates. This is consistent with the rest of the factory.
+
+---
+
+#### R-19 · Document `migration-test.yml` `queue/hold` rationale and unblock path (P1)
+
+**Target:** testsuite issue #232
+
+The `queue/hold` label means agents cannot work on migration testing. But the label provides no unblock criteria visible to agents. Add a comment on issue #232 stating what conditions must be met before the hold is lifted (e.g., "zstd:chunked lane stable across both images"). Until then, ensure the constraint rule from BS-1.19 is in `testsuite/AGENTS.md`.
+
+---
+
+#### R-20 · Add `renovate.json` to `bluefin-lts` (P2)
+
+**Target:** `bluefin-lts`
+
+Add a minimal `renovate.json` that explicitly extends the org config. This makes Renovate behavior explicit, auditable, and overridable:
+
+```json
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["local>projectbluefin/renovate-config"]
+}
+```
+
+---
+
+## 11. Updated Parity Matrix (2026-06-05)
+
+Changes from 2026-06-04 are marked with **▲**.
+
+| Artifact | common | bluefin | bluefin-lts | dakota | actions | testsuite |
+|---|---|---|---|---|---|---|
+| AGENTS.md | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| pre-commit | ✅ | ✅ | ✅ | ✅ **▲** | — | — |
+| skill-drift.yml | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| no-floating-action-tags | ✅ | ✅ | ✅ | ✅ **▲** | ✅ | — |
+| bonedigger lifecycle | ✅ | ✅ | ✅ | ✅ **▲** | — | — |
+| bonedigger SHA-pinned | ✅ | ✅ | ❌ (`@main`) | ❌ (`@main`) | — | — |
+| Renovate config | ✅ **▲** | ✅ | ❓ no local file | ❌ | ✅ | ✅ |
+| Post-merge e2e | ✅ | ✅ | ✅ **▲** | partial | — | — |
+| Pre-merge e2e | ✅ **▲** (common suite) | ✅ (pr-smoke) | ❌ | ❌ | — | — |
+| Installability gate | ⚠️ smoke/common only | ❌ | ❌ | ❌ | — | ❌ |
+| 2-human production gate | ✅ | ✅ | ✅ | ✅ | — | — |
+| CODEOWNERS active | ✅ | ✅ | ✅ | ✅ | — | — |
+| docs/skills/ populated | ✅ | ✅ | ✅ **▲** | ✅ | ✅ | ✅ |
+| Migration-test auto-trigger | — | — | — | — | — | ❌ (queue/hold) |
+| consumer contract verified | — | — | — | — | ❌ | — |
+
+**Net gain since 2026-06-04:** 7 ✅ cells, 1 ⚠️ → ✅ (pr-e2e), 3 ❌ → ✅ (dakota pre-commit, no-tags, bonedigger).
+
+---
+
+## 12. Complete Issue Batch — Priority Order as of 2026-06-05
+
+Items resolved since last audit are removed. New items added in this pass.
+
+| Priority | Issue | Repo | Type | Blocking |
+|---|---|---|---|---|
+| P0 | testsuite#373 | testsuite | ZFS `/var` breaks lts nightly | LTS CI signal |
+| P0 | testsuite#372 | testsuite | gdx:stream10 common suite broken | GDX CI signal |
+| P0 | [#409](https://github.com/projectbluefin/common/issues/409) | org-wide | lifecycle bot unification | all agent operations |
+| P1 | testsuite#232 | testsuite | migration-test queue/hold | upgrade regression detection |
+| P1 | [#424](https://github.com/projectbluefin/common/issues/424) | common | bonedigger crash/panic → promotion gate | promotion quality |
+| P1 | [#420](https://github.com/projectbluefin/common/issues/420) | common | regression contract definition | stream parity |
+| P1 | [#423](https://github.com/projectbluefin/common/issues/423) | common | installability gate | promotion quality |
+| P1 | [#425](https://github.com/projectbluefin/common/issues/425) | common | lts full e2e gate (post-merge added; installer gate still missing) | testing quality |
+| P1 | R-19 above | testsuite | document migration-test unblock criteria | agent clarity |
+| P2 | R-16 above | bluefin-lts, dakota | bonedigger @main exemption comments | agent confusion |
+| P2 | R-18 above | testsuite | add skill-drift.yml | doc parity |
+| P2 | R-20 above | bluefin-lts | add renovate.json | config transparency |
+| P2 | R-15 from §7 | actions | consumer contract machine test | aurora/bazzite safety |
 | P2 | [#404](https://github.com/projectbluefin/common/issues/404) | org-wide | infra parity epic | agent reliability |
 | P2 | [#405](https://github.com/projectbluefin/common/issues/405) | org-wide | QA epic | quality gates |
