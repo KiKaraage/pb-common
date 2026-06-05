@@ -378,11 +378,11 @@ promotion evidence bundle connecting all five pieces. This is a Level 3 requirem
 
 ## 6. Doc Drift Findings (Discovered During Audit)
 
-| File | Issue | Fix |
-|---|---|---|
-| `docs/skills/workflow-map.md:20` | Lists pr-e2e.yml as disabled; #493 is closed, e2e job is active | Remove ⚠️ note |
-| `docs/skills/acmm-audit-level1.md:9` | States "Level 1 → bridging to Level 2"; per arXiv paper nomenclature should be "Level 2 → bridging to Level 3" | Update header |
-| `docs/factory/README.md:112` | Pre-merge e2e listed as "✅ (common suite)" but was recently re-enabled | Confirm and update date |
+| File | Issue | Fix | Status |
+|---|---|---|---|
+| `docs/skills/workflow-map.md:20` | Listed pr-e2e.yml as disabled; #493 is closed, e2e job is active | Remove ⚠️ note | ✅ Already clean — no note was present |
+| `docs/skills/acmm-audit-level1.md:9` | States "Level 1 → bridging to Level 2"; per arXiv paper nomenclature should be "Level 2 → bridging to Level 3" | Update header | ✅ Fixed 2026-06-05 |
+| `docs/factory/README.md:112` | Pre-merge e2e listed as "✅ (common suite)" but was recently re-enabled | Confirm and update date | ✅ Confirmed correct — pr-e2e.yml active, dated 2026-06-05 |
 
 ---
 

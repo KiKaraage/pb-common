@@ -29,7 +29,7 @@ Agent entry point for `projectbluefin/common`. Load only the skill(s) that match
 | Improve the factory (gap audit, automation coverage) | `docs/skills/factory-improvement.md` |
 | Check on-call / hive state for the whole org | `docs/skills/hive.md` |
 | Submit a hardware test report | `docs/hardware-testing.md` |
-| Work on the ACMM / factory maturity model | `docs/skills/acmm-audit-level1.md` |
+| Work on the ACMM / factory maturity model | `docs/skills/acmm-audit-level2.md` |
 
 ## Improving skill docs
 

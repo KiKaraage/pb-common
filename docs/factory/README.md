@@ -114,7 +114,7 @@ The following are wired across the factory today (not every item applies to ever
 | 2-human production gate | ✅ | ✅ | ✅ | ✅ | — | — |
 | docs/skills/ populated | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-For the full blindspot / constraint-rule reference, see [`../skills/acmm-audit-level1.md`](../skills/acmm-audit-level1.md).
+For the full blindspot / constraint-rule reference, see [`../skills/acmm-audit-level2.md`](../skills/acmm-audit-level2.md) (current). The historical Level 1 audit is at [`../skills/acmm-audit-level1.md`](../skills/acmm-audit-level1.md).
 
 ## Open gaps
 
