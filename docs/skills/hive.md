@@ -72,11 +72,11 @@ Each repo posts its health data to the org board on a schedule:
 
 | Repo | Workflow | Schedule | Status |
 |---|---|---|---|
-| dakota | hive-status-sync.yml | `:00 hourly` | ✅ active (label bug: counts `P0` not `hive/p0` — see common#406) |
-| bluefin | hive-progress-sync.yml | `:15 hourly` | ❌ missing — see common#407 |
-| common | hive-progress-sync.yml | `:20 hourly` | ❌ missing — see common#407 |
-| knuckle | hive-progress-sync.yml | `:30 hourly` | ✅ active (label bug: counts `priority:p0` — see common#406) |
-| bluefin-lts | hive-progress-sync.yml | `:45 hourly` | ❌ missing — see common#407 |
+| dakota | hive-status-sync.yml | `:00 hourly` | ✅ active |
+| bluefin | hive-progress-sync.yml | `:15 hourly` | ✅ active |
+| common | hive-progress-sync.yml | `:20 hourly` | ✅ active |
+| knuckle | hive-progress-sync.yml | `:30 hourly` | ✅ active |
+| bluefin-lts | hive-progress-sync.yml | `:45 hourly` | ✅ active |
 
 ---
 

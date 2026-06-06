@@ -4,6 +4,18 @@
 
 Home repo: [projectbluefin/common](https://github.com/projectbluefin/common)
 
+## Agent fast path
+
+```
+1. ~/src/hive-status          # mandatory — surfaces blockers and advisory queue
+2. docs/SKILL.md              # find the skill for your task
+3. docs/factory/agentic-model.md  # cross-repo rules if working across repos
+4. just check && pre-commit run --all-files  # before every commit
+```
+
+**Doc-only changes** (docs/ and AGENTS.md) → push directly to `main`, no PR needed.
+**Everything else** → branch + PR targeting `main`.
+
 ## 🚫 ABSOLUTE PROHIBITION — ublue-os org
 
 **NEVER create issues, pull requests, comments, forks, webhook calls, API writes, automated reports, or any other programmatic action targeting any `ublue-os/*` repository.**

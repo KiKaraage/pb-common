@@ -139,21 +139,19 @@ Each rule must exist in exactly ONE location. Other files should have a one-line
 
 ---
 
-## Known Gaps (as of 2026-06-05)
+## Known Gaps (as of 2026-06-06)
 
 ### P0 — Critical
 
-| Gap | Issue | Automatable? |
-|---|---|---|
-| Org AGENTS.md (projectbluefin/.github) lists ublue-os/aurora and ublue-os/bazzite as "consuming repos" and soft-prohibits PRs only — contradicts the absolute automation ban. Requires a human to update that file. | — | No — human must update projectbluefin/.github AGENTS.md |
-| `bluefin-lts` has no post-merge e2e gate | #420 | Yes |
+*(No current P0 gaps. Last cleared 2026-06-06.)*
 
 ### P1 — Must land soon
 
 | Gap | Issue | Automatable? |
 |---|---|---|
-| Renovate paused — invalid packageRules in base config | #487 | Yes |
-| `bluefin` pre-push hook missing — `git push` goes to ublue-os/bluefin | #476 | Yes |
+| bonedigger not factory-onboarded — no AGENTS.md, no hive labels | #418 | Partial — needs human to set labels |
+| bonedigger crash/panic signal not wired into promotion decisions | #424 | Yes |
+| MERGERAPTOR secrets not configured — `sync-labels.yml` cannot push to downstream repos | #511 | No — human must configure org secrets |
 
 ### Backlog
 
@@ -168,13 +166,12 @@ Each rule must exist in exactly ONE location. Other files should have a one-line
 
 ## Improvement Priority Order
 
-1. Resolve the ublue-os policy contradiction (P0 — human input needed first)
-2. Wire `bluefin-lts` post-merge e2e gate (P0)
-3. Fix Renovate config (P1 — dependency drift is a security concern)
-4. Consolidate duplicate docs (P1 — cheap, high leverage)
-5. `bluefin` pre-push hook (P1 — repeat incident prevention)
-6. Merge `docs-quality.yml` + `skill-drift.yml` (Backlog)
-7. Merge `factory/README.md` + `agentic-model.md` (Backlog)
+1. Onboard bonedigger into the factory (AGENTS.md, hive labels) — #418
+2. Wire bonedigger crash/panic signal into promotion decisions — #424
+3. Configure MERGERAPTOR secrets for label sync — #511
+4. Consolidate duplicate docs (cheap, high leverage)
+5. Merge `docs-quality.yml` + `skill-drift.yml` (Backlog)
+6. Merge `factory/README.md` + `agentic-model.md` (Backlog)
 
 ---
 

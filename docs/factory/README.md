@@ -100,7 +100,7 @@ The following are wired across the factory today (not every item applies to ever
 - **2-human production gate** — `factory-operations` environment requires two maintainer approvals before `:stable` tag in `bluefin`, `bluefin-lts`, `dakota`
 - **consumer-validation.yml** (actions) — validates consumer PR/CI evidence before merging actions changes
 
-## Current parity matrix (2026-06-05)
+## Current parity matrix (2026-06-06)
 
 | Artifact | common | bluefin | bluefin-lts | dakota | actions | testsuite |
 |---|---|---|---|---|---|---|
@@ -109,6 +109,7 @@ The following are wired across the factory today (not every item applies to ever
 | skill-drift.yml | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 | no-floating-action-tags | ✅ | ✅ | ✅ | ✅ | ✅ | — |
 | lifecycle.yml caller | ✅ | ✅ (PR) | ✅ (PR) | ✅ (PR) | ✅ (PR) | ✅ (PR) |
+| hive-progress-sync | ✅ | ✅ | ✅ | ✅ | — | — |
 | Renovate config | ✅ | ✅ | ❓ org-inherited | ❌ | ✅ | ✅ |
 | Post-merge e2e | ✅ | ✅ | ✅ | partial | — | — |
 | Pre-merge e2e | ✅ (common suite) | ✅ (pr-smoke) | ❌ | ❌ | — | — |
@@ -121,12 +122,11 @@ For the full blindspot / constraint-rule reference, see [`../skills/acmm-audit-l
 ## Open gaps
 
 - **Nightly LTS/GDX e2e degraded** — testsuite#372 (gdx:stream10) and testsuite#373 (bluefin:lts ZFS) keep suites persistently red; CI signal for these variants is unreliable
-- **Installability gate** — no installer/bootc-install gate before `testing → stable` promotion [#423](https://github.com/projectbluefin/common/issues/423)
 - **bonedigger crash/panic signal** not wired into promotion decisions [#424](https://github.com/projectbluefin/common/issues/424)
 - **Regression contract** across `latest`/`stable`/`gts`/`lts` streams is undefined [#420](https://github.com/projectbluefin/common/issues/420)
 - **Migration upgrade path testing** is not auto-triggered — `testsuite/migration-test.yml` is `workflow_dispatch` only; schedule addition is `status/hold` pending zstd:chunked stability (testsuite#232)
 - **bonedigger not factory-onboarded** — no AGENTS.md, no hive labels [#418](https://github.com/projectbluefin/common/issues/418)
-- **Lifecycle bot unification** — bonedigger SHA-pin inconsistent across org; `bluefin-lts`/`dakota` use intentional `@main` [#409](https://github.com/projectbluefin/common/issues/409)
+- **sync-labels.yml MERGERAPTOR secrets** — not yet configured; label sync to downstream repos is blocked [#511](https://github.com/projectbluefin/common/issues/511)
 - **consumer contract** for `actions@v1` has no machine verification — `aurora`/`bazzite` compat can silently break
 
 Tracking epics: [#404](https://github.com/projectbluefin/common/issues/404) (infra parity) · [#405](https://github.com/projectbluefin/common/issues/405) (QA model)
