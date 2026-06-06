@@ -90,7 +90,13 @@ Run before any other work:
 ~/src/hive-status
 ```
 
-No arguments, no auth required, completes in under 5 seconds. Surfaces P0/P1 blockers and the advisory queue. Do not proceed without it.
+No arguments, no auth required, completes in under 5 seconds. Surfaces P0/P1 blockers and the advisory queue.
+
+**Act on the output:**
+- 🔴 **P0 blockers** → Stop. Address the blocker before anything else.
+- 🟡 **P1 this cycle** → Prioritize these over new work unless explicitly asked otherwise.
+- **Advisory** → Read and keep in mind; does not block current task.
+- **No blockers** → Proceed with the task.
 
 ## Scope discipline
 
@@ -110,22 +116,7 @@ system_files/
   shared/                  # Shared config for ALL variants (and Aurora) — directly editable
   bluefin/                 # Local editable config for Bluefin-specific variants only
   nvidia/                  # NVIDIA overlay — directly editable
-.github/workflows/
-  lifecycle-caller.yml     # Issue/PR lifecycle — calls common/.github/workflows/lifecycle.yml (deployed to all factory repos)
-  backfill-pipeline.yml   # One-shot workflow_dispatch: injects pipeline widget into pre-existing issues
-  build.yml                # Build + push on merge to main
-  docs-quality.yml         # PR gate: skill frontmatter and Trail of Bits CI
-  e2e.yml                  # Post-merge e2e against bluefin, bluefin-lts, dakota
-  hive-progress-sync.yml   # Hourly queue stats → projectbluefin org project board
-  pr-e2e.yml               # PR-time composed-image common-suite gate
-  promotion-candidate-e2e.yml # Weekly smoke/common checks for testing promotion candidates
-  release.yml              # Monthly versioned OCI release (1st of month, also workflow_dispatch)
-  run-testsuite.yml        # Local wrapper that centralizes the testsuite SHA pin
-  skill-drift.yml          # PR advisory gate for implementation/doc parity
-  sync-codeowners.yml      # Syncs CODEOWNERS TRIAGERS block to downstream repos on push
-  sync-labels.yml          # Syncs labels.json to all factory repos on push (requires MERGERAPTOR secrets)
-  validate.yml             # PR gate: just check, pre-commit, shellcheck, submodule drift
-  validate-brewfiles.yaml  # PR gate: Brewfile validation
+.github/workflows/         # See docs/skills/workflow-map.md for what each workflow does
 ```
 
 ## CODEOWNERS

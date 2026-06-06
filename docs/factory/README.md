@@ -29,15 +29,20 @@ common ────────────────────────�
 bluefin     ──┐                  │
 bluefin-lts ─┼──→ images ──→ testsuite ──→ iso
 dakota      ─┘                  │
+                                 │
+                          bootc-installer / knuckle
+                          (installer media + TUI)
 ```
 
-- `common`: shared OCI layer and shared factory documentation
+- `common`: shared OCI layer and shared factory documentation (org brain)
 - `bluefin`: mainline Bluefin image streams
 - `bluefin-lts`: LTS image streams
 - `dakota`: bootc image pipeline in the same factory orbit
 - `testsuite`: end-to-end gate for downstream image behavior
 - `iso`: installation media fed by validated image outputs
 - `actions`: shared GitHub Actions used across the org
+- `bootc-installer`: GTK4/Adwaita + KDE/XFCE multi-variant Flatpak installer for bootc images
+- `knuckle`: Go-based TUI installer — `main` branch, no testing branch
 
 For the workflow-by-workflow purpose map inside `common`, see [`../skills/workflow-map.md`](../skills/workflow-map.md).
 
@@ -49,6 +54,8 @@ For the workflow-by-workflow purpose map inside `common`, see [`../skills/workfl
 - `dakota` — https://github.com/projectbluefin/dakota
 - `actions` — https://github.com/projectbluefin/actions
 - `testsuite` — https://github.com/projectbluefin/testsuite
+- `bootc-installer` — https://github.com/projectbluefin/bootc-installer
+- `knuckle` — https://github.com/projectbluefin/knuckle
 
 ## Agentic operating model
 
@@ -117,7 +124,7 @@ The following are wired across the factory today (not every item applies to ever
 | 2-human production gate | ✅ | ✅ | ✅ | ✅ | — | — |
 | docs/skills/ populated | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-For the full blindspot / constraint-rule reference, see [`../skills/acmm-audit-level2.md`](../skills/acmm-audit-level2.md) (current). The historical Level 1 audit is at [`../skills/acmm-audit-level1.md`](../skills/acmm-audit-level1.md).
+For the full blindspot / constraint-rule reference, see [`../skills/acmm-audit-level2.md`](../skills/acmm-audit-level2.md) (historical L2→L3 bridge audit). Factory current ACMM status: **Level 3 (Instructed)**.
 
 ## Open Gaps
 
@@ -146,6 +153,8 @@ Tracking epics: [#404](https://github.com/projectbluefin/common/issues/404) (inf
 - `dakota` — https://github.com/projectbluefin/dakota/blob/main/AGENTS.md
 - `actions` — https://github.com/projectbluefin/actions/blob/main/AGENTS.md
 - `testsuite` — https://github.com/projectbluefin/testsuite/blob/main/AGENTS.md
+- `bootc-installer` — https://github.com/projectbluefin/bootc-installer/blob/main/AGENTS.md
+- `knuckle` — https://github.com/projectbluefin/knuckle/blob/main/AGENTS.md
 
 ## Sensitive paths (require maintainer review)
 

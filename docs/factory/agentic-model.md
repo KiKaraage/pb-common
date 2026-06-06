@@ -33,6 +33,7 @@ Per-repo specifics live in that repo's `AGENTS.md` — start there, then load th
 | `bluefin-lts` | `main` | `main→lts` is the promotion path |
 | `dakota` | `testing` | Never `main` |
 | `knuckle` | `main` | Installer — no testing branch |
+| `bootc-installer` | `main` | Flatpak installer — no testing branch |
 | `testsuite` | `main` | Test repo — no testing branch |
 | `actions` | `main` | Shared actions — no testing branch |
 

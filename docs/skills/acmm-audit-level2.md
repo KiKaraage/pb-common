@@ -1,13 +1,15 @@
 ---
 name: acmm-audit-level2
-description: "ACMM Level 2 (Assisted) audit — confirms current maturity and defines the bridge to Level 3 (Instructed). Supersedes Level 1 audit for current state."
+description: "ACMM Level 2→3 bridge audit (historical). Factory has reached Level 3 (Instructed) as of 2026-06-06. This doc records the L2 baseline and L3 bridge requirements that were implemented."
 ---
 
 # ACMM Level 2 Audit — Project Bluefin Factory
 
+> **Status (2026-06-06):** Factory has achieved **Level 3 (Instructed)**. This document records the Level 2 baseline assessment and the Level 3 bridge requirements that drove the upgrade. It is kept as historical context; it is not the current state.
+
 **Framework:** AI Codebase Maturity Model (arXiv:2604.09388)
 **Assessment:** Level 2 (Assisted) is **substantially met** with degraded confidence in promotion/testing reliability.
-**Bridge target:** Level 3 (Instructed)
+**Bridge target:** Level 3 (Instructed) — **achieved 2026-06-06**
 **Scope:** `common`, `bluefin`, `bluefin-lts`, `dakota`, `actions`, `testsuite`
 **Date:** 2026-06-05 (third pass — all L3 P1 issues filed)
 

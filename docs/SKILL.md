@@ -47,6 +47,8 @@ Agent entry point for `projectbluefin/common`. Load only the skill(s) that match
 | Work on the knuckle installer QA or e2e | `docs/skills/knuckle-qa.md` |
 | Release the knuckle installer | `docs/skills/knuckle-release.md` |
 | Test knuckle in a QEMU VM | `docs/skills/knuckle-testlab.md` |
+| **bootc-installer (Flatpak)** | |
+| Work on the GTK4/Adwaita/KDE bootc Flatpak installer | `docs/skills/dakota-installer.md` (→ redirects to bootc-installer skill) |
 | **Factory health and improvement** | |
 | Understand factory topology, parity matrix, and org structure | `docs/factory/README.md` |
 | Improve the factory (gap audit, automation coverage) | `docs/skills/factory-improvement.md` |
