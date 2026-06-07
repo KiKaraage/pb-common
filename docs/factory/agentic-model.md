@@ -79,14 +79,6 @@ See [`docs/skills/label-workflow.md`](../skills/label-workflow.md) for the full 
 - `@` mentions only when asking someone to do something specific. Never standalone.
 - When in doubt, post nothing.
 
-## Session start
-
-```bash
-~/src/hive-status
-```
-
-Mandatory before any work. Surfaces P0/P1 blockers and the advisory queue.
-
 ## Finding work
 
 ```bash

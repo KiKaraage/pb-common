@@ -31,8 +31,7 @@ You are an agent in this loop. Your work compounds. See [`docs/skills/hive.md`](
 ## Agent fast path
 
 ```
-1. ~/src/hive-status          # mandatory — surfaces blockers and advisory queue
-2. docs/SKILL.md              # find the skill for your task
+1. docs/SKILL.md              # find the skill for your task
 3. docs/factory/agentic-model.md  # cross-repo rules if working across repos
 4. just check && pre-commit run --all-files  # before every commit
 ```
@@ -167,27 +166,11 @@ Both trailers must appear together. One without the other is a CI violation.
 
 When asked an analysis question ("what's the fix?", "how should we handle X?", "is there a better approach?"), **answer the question — do not implement**. Only write or change code when explicitly asked to make the change. Discussing a solution and implementing it are separate steps; wait for the user to cross that line.
 
-## Session start — mandatory
-
-Run before any other work:
-
-```bash
-~/src/hive-status
-```
-
-No arguments, no auth required, completes in under 5 seconds. Surfaces P0/P1 blockers and the advisory queue.
-
-**Act on the output:**
-- 🔴 **P0 blockers** → Stop. Address the blocker before anything else.
-- 🟡 **P1 this cycle** → Prioritize these over new work unless explicitly asked otherwise.
-- **Advisory** → Read and keep in mind; does not block current task.
-- **No blockers** → Proceed with the task.
-
 ## Scope discipline
 
 Read task intent literally:
 
-- `"work on hive priority issues"` = pick the top issue from `hive-status` output and fix it
+- `"work on hive priority issues"` = pick the top open issue and fix it
 - `"do PR reviews"` = review open PRs only — do not start fix work
 - If a session could involve both, confirm scope with the user before acting
 

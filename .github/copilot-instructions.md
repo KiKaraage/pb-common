@@ -8,16 +8,6 @@ If a task requires `ublue-os` write access → **stop and tell the human to repo
 
 ---
 
-## Session start — mandatory
-
-```bash
-~/src/hive-status
-```
-
-Run before any other work. Surfaces P0/P1 blockers and the advisory queue.
-
----
-
 ## Operating contract
 
 **Read [`AGENTS.md`](../AGENTS.md) for the full operating contract** — issue lifecycle, PR rules, mandatory gates, repo layout, CODEOWNERS, build commands, scope discipline.
