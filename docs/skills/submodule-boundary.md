@@ -52,4 +52,55 @@ rm -f "%{install-root}%{prefix}/lib/systemd/system/rechunker-group-fix.service"
 rm -f "%{install-root}%{prefix}/lib/systemd/system-preset/00-rechunker-group-fix.preset"
 ```
 
-**Current exclusions in `common.bst`:** `rechunker-group-fix` (script + service + preset) — chunka migration aid for legacy rechunk-based image rebases; not needed on a fresh dakota install.
+**Current exclusions in `common.bst`:** `rechunker-group-fix` (script + service + preset) — migration aid for legacy rechunk-based image rebases; not needed on a fresh dakota install.
+
+## rechunker-group-fix — architecture and fix history
+
+### What it does
+
+`rechunker-group-fix` ensures that users rebasing from images built with `nss-altfiles` (groups stored in `/usr/lib/group`) do not break their gshadow file when switching to an image that uses `/etc/group`. Without it, missing gshadow entries cause black screens and non-booting systems.
+
+Key files (all live in `system_files/shared/`):
+- `usr/bin/rechunker-group-fix` — script that syncs group→gshadow entries
+- `usr/lib/systemd/system/rechunker-group-fix.service` — service that runs the script at boot
+- `usr/lib/systemd/system-preset/00-rechunker-group-fix.preset` — enables the service on install
+
+### Service ordering (critical — do not change without understanding this)
+
+As of [common#530](https://github.com/projectbluefin/common/pull/530), the service must run with:
+
+```ini
+DefaultDependencies=no
+Wants=local-fs.target
+After=local-fs.target
+After=bootc-sysusers-shadow-sync.service
+Before=systemd-sysusers.service
+```
+
+**Why:** `systemd-sysusers` is what fails if gshadow is corrupt. The service must run *before* sysusers, not after. `bootc-sysusers-shadow-sync.service` is the upstream fix shipped in bootc ≥1.16 ([bootc#2207](https://github.com/bootc-dev/bootc/pull/2207), merged May 2025); our service must run after it so they coexist correctly. `DefaultDependencies=no` is required for any early-boot unit.
+
+### flock on gshadow writes (required)
+
+The script wraps all gshadow writes in `flock -x 9` to prevent corruption from concurrent access:
+
+```bash
+(
+    flock -x 9
+    while IFS=: read -r group_name _rest; do
+        grep -q "^${group_name}:" "$GSHADOW_FILE" 2>/dev/null || \
+            printf '%s:!*::\n' "$group_name" >> "$GSHADOW_FILE"
+    done < "$GROUP_FILE"
+) 9>>"${GSHADOW_FILE}"
+```
+
+Do not remove the flock — concurrent sysusers runs can corrupt the file.
+
+### Repo-level duplication history
+
+**bluefin** previously had its own copy of these files in `system_files/shared/`, which *shadowed* common's version and prevented common's fixes from taking effect. This was removed in [bluefin#439](https://github.com/projectbluefin/bluefin/pull/439).
+
+**bluefin-lts** has never had its own copy — it has always deferred to common. No removal needed.
+
+**dakota** actively strips these files (see exclusion pattern above) since it is a fresh BuildStream image and the migration path does not apply.
+
+**Future agents:** If you need to change the rechunker service ordering or script behavior, edit only `system_files/shared/` in this repo. Check that no consuming repo (bluefin, bluefin-lts) has re-introduced a shadowing copy before declaring the fix applied.
