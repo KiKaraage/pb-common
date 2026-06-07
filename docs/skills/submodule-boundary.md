@@ -34,6 +34,10 @@ Only `bluefin-branding` remains as a submodule:
 bluefin-branding → projectbluefin/branding (wallpapers, logos)
 ```
 
+## Local testing without a full build
+
+Use `just overlay` to test `system_files/` changes as a systemd-sysext on a running Bluefin system, without building the full OCI image. See [`containerfile.md`](containerfile.md) for the full recipe, SELinux requirements, and activation steps.
+
 ## Dakota exclusion pattern
 
 `system_files/shared/` flows into **bluefin, bluefin-lts, and dakota** via the common OCI context. Dakota's `elements/bluefin/common.bst` does a plain `cp -r system_files/shared/usr/` — it receives everything.

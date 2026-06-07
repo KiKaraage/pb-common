@@ -81,6 +81,27 @@ dakota  (main→:latest)       ←── images ──→ testsuite (e2e gate)
 Each image repo pulls `ghcr.io/projectbluefin/common:latest` as a base layer.
 testsuite gates `:latest` promotion in all three image repos.
 
+### Core repos
+
+| Repo | Role |
+|---|---|
+| [projectbluefin/bluefin](https://github.com/projectbluefin/bluefin) | Main OS image |
+| [projectbluefin/bluefin-lts](https://github.com/projectbluefin/bluefin-lts) | LTS variant |
+| [projectbluefin/actions](https://github.com/projectbluefin/actions) | Shared CI actions + canonical skills hub |
+| [projectbluefin/common](https://github.com/projectbluefin/common) | Shared OCI layer (this repo) |
+| [projectbluefin/dakota](https://github.com/projectbluefin/dakota) | BuildStream image build |
+| [projectbluefin/bonedigger](https://github.com/projectbluefin/bonedigger) | Client reporting + issue lifecycle bot |
+
+### Infrastructure repos
+
+| Repo | Role |
+|---|---|
+| [projectbluefin/housekeeping](https://github.com/projectbluefin/housekeeping) | Org-wide maintenance workflows |
+| [projectbluefin/testsuite](https://github.com/projectbluefin/testsuite) | QA pipeline — Argo + KubeVirt + AT-SPI |
+| [projectbluefin/testing-lab](https://github.com/projectbluefin/testing-lab) | Homelab QA pipeline |
+| [projectbluefin/bluespeed](https://github.com/projectbluefin/bluespeed) | KubeStellar homelab factory |
+| [projectbluefin/iso](https://github.com/projectbluefin/iso) | ISO builds |
+
 **Supply chain policy:** All signing, SBOM generation, CVE scanning, and provenance attestation logic lives in `projectbluefin/actions`. Do not add inline supply chain steps to `common`'s workflows — consume the shared composite actions instead. See [docs/skills/release-promotion.md](docs/skills/release-promotion.md) and [actions#86](https://github.com/projectbluefin/actions/issues/86).
 
 ### Issue lifecycle

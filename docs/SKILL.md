@@ -28,6 +28,7 @@ Agent entry point for `projectbluefin/common`. Load only the skill(s) that match
 | Understand what files are editable here vs submodule | `docs/skills/submodule-boundary.md` |
 | Touch any image reference or registry path | `docs/skills/image-registry.md` |
 | Work on `ublue-rollback-helper` | `docs/skills/rollback-helper.md` |
+| Modify the Containerfile or add a new binary | `docs/skills/containerfile.md` |
 | **Build, CI, and release (this repo)** | |
 | Change `.github/workflows/` | `docs/skills/ci-tooling.md` + `docs/skills/workflow-map.md` |
 | Understand what each workflow does | `docs/skills/workflow-map.md` |
