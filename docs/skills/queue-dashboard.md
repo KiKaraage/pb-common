@@ -7,6 +7,16 @@ metadata:
 
 # Queue Dashboard — projectbluefin/common
 
+## Contents
+- [When asked to "merge PRs"](#when-asked-to-merge-prs)
+- [Merge ruleset](#merge-ruleset-main-review-required-with-renovate-bypass)
+- [Triage tiers](#triage-tiers)
+- [PR review workflow](#pr-review-workflow)
+- [Rebase pattern for fork PRs](#rebase-pattern-for-fork-prs)
+- [Known infra issues](#known-infra-issues-as-of-2026-06-04)
+
+---
+
 ## When asked to "merge PRs"
 
 The intent is: **fix any blockers and land the PR**. Do not just review and leave comments.

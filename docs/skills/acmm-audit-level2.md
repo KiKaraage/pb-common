@@ -17,6 +17,20 @@ metadata:
 
 ---
 
+## Contents
+- [Executive Summary](#executive-summary)
+- [Level 2 Criteria Evaluation](#level-2-criteria-evaluation)
+- [1. AI Usage Blindspots](#1-ai-usage-blindspots)
+- [2. Current Feedback Mechanisms](#2-current-feedback-mechanisms)
+- [3. Structural Obstacles](#3-structural-obstacles)
+- [4. Level 3 Bridge Requirements](#4-level-3-bridge-requirements)
+- [5. Recommended Issue Batch](#5-recommended-issue-batch)
+- [6. Doc Drift Findings](#6-doc-drift-findings-discovered-during-audit)
+- [7. Supply Chain & Artifact Integrity](#7-supply-chain--artifact-integrity-level-3-preparation)
+- [Appendix: Level Definitions](#appendix-level-definitions-arxiv26040938)
+
+---
+
 ## Executive Summary
 
 > **This is a historical baseline document.** The factory reached Level 3 (Instructed) on 2026-06-06. The text below records the L2 state as assessed on 2026-06-05. Use it to understand the bridge requirements that were implemented.
