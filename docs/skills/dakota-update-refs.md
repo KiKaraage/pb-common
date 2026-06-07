@@ -1,6 +1,6 @@
 ---
 name: dakota-update-refs
-description: Use when updating a package version in dakota, bumping upstream refs, understanding how dependency tracking works, or asking how to update Tailscale/Zig/junction refs in the Bluefin image
+description: Covers updating package versions in dakota — bumping upstream refs, understanding how dependency tracking works, and updating refs for Tailscale, Zig, junction, and other dependencies. Use when updating a package version, bumping upstream refs, or asking how refs are tracked in the Bluefin image.
 ---
 
 # Updating Upstream Refs (dakota)

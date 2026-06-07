@@ -1,6 +1,6 @@
 ---
 name: dakota-package-gnome-extensions
-description: Use when packaging a GNOME Shell extension for BuildStream in dakota, when adding a new extension to the Bluefin image, or when debugging extension installation paths, UUID discovery, or GSettings schema compilation
+description: Covers packaging GNOME Shell extensions for BuildStream in dakota — installation paths, UUID discovery, and GSettings schema compilation. Use when packaging a GNOME Shell extension, adding a new extension to the Bluefin image, or debugging extension installation.
 ---
 
 # Packaging GNOME Shell Extensions (dakota)

@@ -1,6 +1,6 @@
 ---
 name: dakota-bst-overrides
-description: Use when creating, evaluating, or removing BuildStream junction element overrides in projectbluefin/dakota — ensures agents follow GNOME OS upstream-first principle and maintain recognizable patterns
+description: Covers BuildStream junction element overrides in projectbluefin/dakota — upstream-first principle and recognizable patterns. Use when creating, evaluating, or removing junction overrides in the dakota build.
 ---
 
 # Managing BuildStream Junction Overrides (dakota)

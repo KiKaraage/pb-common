@@ -1,6 +1,6 @@
 ---
 name: dakota-local-ota
-description: Use when setting up or understanding the local OTA update registry workflow for dakota — running a zot registry on the host, publishing built images to it, and pointing a QEMU VM at the local registry for bootc upgrade testing without pushing to GHCR
+description: Covers the local OTA update registry workflow for dakota — running a zot registry on the host, publishing built images, and pointing a QEMU VM at the local registry for bootc upgrade testing without pushing to GHCR. Use when setting up or running the local OTA test loop.
 ---
 
 # Local OTA Registry (dakota)

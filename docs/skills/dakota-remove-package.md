@@ -1,6 +1,6 @@
 ---
 name: dakota-remove-package
-description: Use when removing a software package from the Bluefin image in dakota, deleting a .bst element, or unwiring a package from the build
+description: Covers removing software packages from the Bluefin image in dakota — deleting .bst elements and unwiring them from the build. Use when removing a package from the image or deleting a .bst element.
 ---
 
 # Removing a Package (dakota)

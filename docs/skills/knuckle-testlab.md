@@ -1,6 +1,6 @@
 ---
 name: knuckle-testlab
-description: Launch knuckle in a Flatcar QEMU VM on ghost for interactive manual testing. Load when demoing, verifying TUI behavior, or iterating on UI changes.
+description: Covers running knuckle in a Flatcar QEMU VM on ghost for interactive manual testing — TUI behavior verification and UI iteration. Use when demoing knuckle, verifying TUI behavior, or iterating on UI changes in a QEMU VM.
 ---
 
 # knuckle-testlab

@@ -1,8 +1,32 @@
 # bluefin-common — Agent & Copilot Instructions
 
+> **You are part of an agentic operating system, built by agentic workflows.**
+> Agents implement. Humans approve design, security, and merge. See the [org-wide AGENTS.md](https://github.com/projectbluefin/.github/blob/main/AGENTS.md) for the full operating model.
+
 **bluefin-common** is the shared OCI layer consumed by all Bluefin image variants. Changes here propagate to `bluefin`, `bluefin-lts`, and `dakota`. Stay surgical.
 
 Home repo: [projectbluefin/common](https://github.com/projectbluefin/common)
+
+## The System You Are Part Of
+
+```
+┌──────────────────────────────────────────────────────────┐
+│  KubeStellar Hive  https://kubestellar.io/live/hive/     │
+│  AI-native Continuous Maturity Model (ACMM) orchestration│
+└──────────────────┬───────────────────────────────────────┘
+                   │
+      ┌────────────┴────────────┐
+      ▼                         ▼
+┌─────────────────┐   ┌──────────────────────┐
+│  bonedigger     │   │  kubestellar-bot      │
+│  ujust report   │──▶│  picks up queued      │
+│  files issues   │   │  issues, dispatches   │
+└─────────────────┘   │  agents, ships fixes  │
+         ▲            └──────────────────────┘
+         └──────── better OS → loop ──────────┘
+```
+
+You are an agent in this loop. Your work compounds. See [`docs/skills/hive.md`](docs/skills/hive.md).
 
 ## Agent fast path
 
@@ -80,6 +104,7 @@ Lifecycle automation source of truth: `.github/workflows/lifecycle.yml`
   Assisted-by: <Model> via GitHub Copilot
   Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
   ```
+- **SHA pinning:** All `uses:` references to external GitHub Actions must be pinned to a full commit SHA with a version comment — never use floating tags (`@main`, `@latest`, `@v*`). Pre-commit enforces this. See [`docs/skills/ci-tooling.md`](docs/skills/ci-tooling.md).
 - Max 4 open PRs at a time per agent
 - No WIP PRs
 - **Never push directly to a protected branch.** Always open a PR. PRs enter the human review queue (`pr/needs-review`) and require `lgtm` from a human before merging. This applies to `common/main` too — branch protection bypass is not agent-permitted.
@@ -152,6 +177,56 @@ pre-commit run --all-files   # hygiene checks (json/yaml/toml + actionlint)
 ## Scope warning
 
 Changes here flow into ALL downstream Bluefin variants at next build. A broken `system_files/shared/` change will break bluefin, bluefin-lts, AND dakota simultaneously. Test locally before pushing.
+
+## Self-Improvement Loop
+
+Every agent session produces two outputs:
+
+1. **The work** — the PR, fix, or improvement
+2. **The learning** — what a future agent should know
+
+Output 1 without Output 2 leaves the factory no smarter. **The loop only compounds if agents write back.**
+
+```
+Agent works on task
+  └─ discovers pattern / workaround / convention
+       └─ writes it to the relevant skill file in docs/skills/
+            └─ commits in the same PR (never a follow-up)
+                 └─ next agent starts smarter → loop
+```
+
+### Before marking work complete — checklist
+
+- [ ] Did I discover any workaround, non-obvious pattern, or convention?
+- [ ] Is there a skill file for the area I worked in?
+- [ ] If yes — did I update it?
+- [ ] If no — did I create one in `docs/skills/`?
+- [ ] Is the skill file committed in **this same PR**?
+
+See [`docs/skills/skill-improvement.md`](docs/skills/skill-improvement.md) for the full mandate and what counts as a learning worth writing.
+
+## Human Decision Gates
+
+Stop and request human input at these four gates. Never guess past them.
+
+| Gate | Stop when |
+|---|---|
+| **Design** | Architecture change, new subsystem, user-visible behavior change |
+| **Security** | Auth, signing, supply chain, secrets, COPR/third-party sources |
+| **Breakage** | Cross-repo breaking change — removing/renaming inputs, changing defaults consuming repos depend on |
+| **Merge** | PR ready for final review — always requires human `lgtm` |
+
+See [`docs/skills/human-gates.md`](docs/skills/human-gates.md) for how to signal a gate and what evidence is required.
+
+## Verification Requirements
+
+Do not request PR review without evidence:
+
+- [ ] CI is passing (link the run in the PR description)
+- [ ] If no automated test covers the change — describe how you manually verified it
+- [ ] Skill file update committed in **this same PR** (not a follow-up)
+- [ ] PR title follows Conventional Commits format
+- [ ] Both AI attribution trailers present on every AI-authored commit
 
 ## Skill routing
 

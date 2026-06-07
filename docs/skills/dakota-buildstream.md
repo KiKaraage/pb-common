@@ -1,6 +1,6 @@
 ---
 name: dakota-buildstream
-description: Use when writing, editing, or reviewing BuildStream .bst element files in the projectbluefin/dakota repo — provides variable names, element kinds, source kinds, command hooks, systemd paths, and layer structure
+description: Reference for writing, editing, and reviewing BuildStream .bst element files in projectbluefin/dakota — variable names, element kinds, source kinds, command hooks, systemd paths, and layer structure. Use when authoring or reviewing any .bst element.
 ---
 
 # BuildStream Element Reference (dakota)

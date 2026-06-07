@@ -1,6 +1,6 @@
 ---
 name: dakota-overview
-description: Use when you need context on what dakota/egg is, how it differs from production Bluefin, what unique features it has, what the known package gaps are, or when planning new package additions to the image
+description: Covers what dakota/egg is, how it differs from production Bluefin, its unique features, known package gaps, and planning new additions. Use when needing context on the dakota project, understanding package gaps, or planning new package additions to the image.
 ---
 
 # Dakota (egg) Overview

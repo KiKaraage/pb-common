@@ -1,6 +1,6 @@
 ---
 name: dakota-ci
-description: Use when debugging CI failures in projectbluefin/dakota, understanding the build pipeline, modifying the GitHub Actions workflow, working with the cache.projectbluefin.io remote CAS, or troubleshooting why a BST build succeeded locally but fails in CI
+description: Covers CI failure debugging and pipeline troubleshooting for projectbluefin/dakota — build pipeline, GitHub Actions workflow, remote CAS, and local-vs-CI divergence. Use when debugging CI failures, modifying the GHA workflow, or troubleshooting why a BST build succeeds locally but fails in CI.
 ---
 
 # CI Pipeline Operations (dakota)

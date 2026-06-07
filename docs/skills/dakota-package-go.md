@@ -1,6 +1,6 @@
 ---
 name: dakota-package-go
-description: Use when packaging a Go project for dakota/Bluefin BuildStream, when an element needs go_module sources for offline builds, or when setting up GOPATH vendoring in BuildStream
+description: Covers packaging Go projects for dakota/Bluefin BuildStream with go_module sources for offline builds and GOPATH vendoring. Use when packaging a Go project, or when an element needs go_module sources for an offline build.
 ---
 
 # Packaging Go Projects (dakota)

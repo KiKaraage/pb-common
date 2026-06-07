@@ -1,6 +1,6 @@
 ---
 name: dakota-package-zig
-description: Use when packaging a project that uses the Zig build system for dakota/Bluefin BuildStream, when an element needs zig fetch/build with offline dependency caching, or when adding Zig dependencies to an existing element
+description: Covers packaging Zig build system projects for dakota/Bluefin BuildStream with offline dependency caching via zig fetch/build. Use when packaging a project that uses the Zig build system, or when adding Zig dependencies to an existing element.
 ---
 
 # Packaging Zig Projects (dakota)

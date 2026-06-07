@@ -1,6 +1,6 @@
 ---
 name: dakota-debugging
-description: Use when a BuildStream build fails in projectbluefin/dakota, when diagnosing element errors, or when reading CI build logs to understand what went wrong
+description: Covers BuildStream build failure diagnosis for projectbluefin/dakota — element errors, CI build log analysis, and common failure modes. Use when a BST build fails, when diagnosing element errors, or when reading CI logs to understand what went wrong.
 ---
 
 # Debugging BuildStream Build Failures (dakota)

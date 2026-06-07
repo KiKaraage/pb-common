@@ -1,6 +1,6 @@
 ---
 name: dakota-add-package
-description: Use when adding a new software package to the dakota/Bluefin BuildStream build, creating a new .bst element, or asking how to package something for the image
+description: Covers adding new software packages to the dakota/Bluefin BuildStream image via .bst elements. Use when adding a new package to the image, creating a new .bst element, or asking how to package something for dakota.
 ---
 
 # Adding a Package (dakota)

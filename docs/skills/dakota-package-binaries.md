@@ -1,6 +1,6 @@
 ---
 name: dakota-package-binaries
-description: Use when packaging a project in dakota that provides official pre-built static binaries, when building from source is impractical, or when you need a bootstrap compiler
+description: Covers packaging pre-built static binaries in dakota BuildStream when building from source is impractical or a bootstrap compiler is needed. Use when packaging a project that provides official pre-built static binaries.
 ---
 
 # Packaging Pre-Built Binaries (dakota)

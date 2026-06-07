@@ -1,6 +1,6 @@
 ---
 name: dakota-oci-layers
-description: Use when understanding how packages flow into the final OCI image in projectbluefin/dakota, when modifying layer assembly, or when debugging why files appear or are missing from the built image
+description: Covers OCI layer assembly and package flow into the final dakota image — how packages move from .bst elements into the built image and how to debug missing or unexpected files. Use when modifying layer assembly or debugging why files appear or are missing from the image.
 ---
 
 # OCI Layer Composition (dakota)

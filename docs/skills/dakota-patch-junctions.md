@@ -1,6 +1,6 @@
 ---
 name: dakota-patch-junctions
-description: Use when modifying upstream freedesktop-sdk or gnome-build-meta elements in dakota, when fixing bugs in junction dependencies, or when deciding between patching an element vs replacing it entirely
+description: Covers patching upstream freedesktop-sdk and gnome-build-meta elements in dakota — deciding between patching an element vs. replacing it entirely. Use when modifying upstream junction elements, fixing bugs in junction dependencies, or evaluating patch vs. replace strategies.
 ---
 
 # Patching Upstream Junctions (dakota)

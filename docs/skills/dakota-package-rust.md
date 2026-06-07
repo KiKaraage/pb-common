@@ -1,6 +1,6 @@
 ---
 name: dakota-package-rust
-description: Use when packaging a Rust project with Cargo.toml for dakota/Bluefin BuildStream, when an element needs cargo2 sources for offline builds, or when generating cargo dependency lists
+description: Covers packaging Rust/Cargo projects for dakota/Bluefin BuildStream with cargo2 sources for offline builds. Use when packaging a Rust project with Cargo.toml, or when an element needs cargo2 sources.
 ---
 
 # Packaging Rust/Cargo Projects (dakota)
