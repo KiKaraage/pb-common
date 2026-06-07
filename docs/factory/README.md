@@ -93,7 +93,6 @@ The following are wired across the factory today (applies to core pipeline repos
 - **Squash-only merge + delete-branch-on-merge**
 - **5 standard issue templates**
 - **CODEOWNERS** with triage sentinel — synced from `common` to downstream repos via `sync-codeowners.yml`
-- **hive-progress-sync.yml** — hourly org board update
 - **lifecycle.yml** — common-owned issue/PR lifecycle: slash commands, widget, label guard, stale sweep. Active in all 6 core pipeline repos via `lifecycle-caller.yml`.
 - **bonedigger** — scoped to ujust report filing and priority auto-escalation only
 - **skill-drift.yml** — PR advisory gate for doc/impl parity (`common`, `bluefin`, `bluefin-lts`, `dakota`, `actions`; `testsuite` pending)
@@ -114,7 +113,6 @@ The following are wired across the factory today (applies to core pipeline repos
 | skill-drift.yml | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 | no-floating-action-tags | ✅ | ✅ | ✅ | ✅ | ✅ | — |
 | lifecycle.yml caller | ✅ | ✅ (PR) | ✅ (PR) | ✅ (PR) | ✅ (PR) | ✅ (PR) |
-| hive-progress-sync | ✅ | ✅ | ✅ | ✅ | — | — |
 | Renovate config | ✅ | ✅ | ❓ org-inherited | ❌ | ✅ | ✅ |
 | Post-merge e2e | ✅ | ✅ | ✅ | partial | — | — |
 | Pre-merge e2e | ✅ (common suite) | ✅ (pr-smoke) | ❌ | ❌ | — | — |

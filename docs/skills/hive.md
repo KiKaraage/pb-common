@@ -77,18 +77,6 @@ Reset each cycle by hive agents and human triage.
 
 ---
 
-## Hive sync workflows
-
-Each repo posts its health data to the org board on a schedule:
-
-| Repo | Workflow | Schedule | Status |
-|---|---|---|---|
-| dakota | hive-status-sync.yml | `:00 hourly` | ✅ active |
-| bluefin | hive-progress-sync.yml | `:15 hourly` | ✅ active |
-| common | hive-progress-sync.yml | `:20 hourly` | ✅ active |
-| knuckle | hive-progress-sync.yml | `:30 hourly` | ✅ active |
-| bluefin-lts | hive-progress-sync.yml | `:45 hourly` | ✅ active |
-
 ---
 
 ## Finding work
