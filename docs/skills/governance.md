@@ -7,6 +7,15 @@ metadata:
 
 # Contributor Governance — Triagers & CODEOWNERS
 
+## Contents
+- [Roles](#roles)
+- [CODEOWNERS structure](#codeowners-structure)
+- [Sync workflow](#sync-workflow)
+- [Branch protection](#branch-protection)
+- [Lifecycle automation](#lifecycle-automation)
+
+---
+
 ## Roles
 
 | Role | GitHub team | What they can do |

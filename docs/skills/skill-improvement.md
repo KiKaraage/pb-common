@@ -14,6 +14,14 @@ Every agent session produces two outputs:
 
 Output 1 without Output 2 leaves the factory no smarter. The loop only compounds if agents write back.
 
+## Contents
+- [Before You Mark Work Complete](#before-you-mark-work-complete)
+- [What Counts as a Learning Worth Writing Back](#what-counts-as-a-learning-worth-writing-back)
+- [Where to Write It](#where-to-write-it)
+- [Which Skill File to Update](#which-skill-file-to-update)
+- [How to Commit It](#how-to-commit-it)
+- [See Also](#see-also)
+
 ---
 
 ## Before You Mark Work Complete

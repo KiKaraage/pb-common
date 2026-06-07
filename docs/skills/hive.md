@@ -7,6 +7,15 @@ metadata:
 
 # The Hive
 
+## Contents
+- [What the hive is](#what-the-hive-is)
+- [Label taxonomy](#label-taxonomy)
+- [Hive sync workflows](#hive-sync-workflows)
+- [Finding work](#finding-work)
+- [Setting hive labels](#setting-hive-labels)
+
+---
+
 ## What the hive is
 
 The hive is the agentic operations layer for the projectbluefin factory. It combines three components to form a closed self-improvement loop:

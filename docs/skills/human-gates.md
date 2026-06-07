@@ -9,6 +9,12 @@ metadata:
 
 Agents implement autonomously **except** at these four gates. At each gate, stop work, open a draft PR, and request human input explicitly. Never guess past a gate.
 
+## Contents
+- [The Four Gates](#the-four-gates)
+- [How to Signal a Gate](#how-to-signal-a-gate)
+- [Verification Evidence Requirement](#verification-evidence-requirement)
+- [When in Doubt](#when-in-doubt)
+
 ---
 
 ## The Four Gates
