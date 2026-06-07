@@ -1,6 +1,8 @@
 ---
 name: skill-improvement
 description: "The skill-improvement mandate — every agent session must produce a skill file update alongside the work. Use when completing a task and deciding whether to write a skill update, or when creating or updating a skill file."
+metadata:
+  type: procedure
 ---
 
 # Skill Improvement Mandate
@@ -107,3 +109,4 @@ The skill-drift CI gate will warn if you forget. Treat the warning as a hard req
 
 - [`docs/skills/skill-drift.md`](./skill-drift.md) — how the CI enforcement works
 - [`docs/factory/IMPROVEMENTS.md`](../factory/IMPROVEMENTS.md) — the running record of factory improvements (append here too when shipping something significant)
+- [Canonical skill file format](https://github.com/projectbluefin/actions/blob/main/.github/skills/skill-improvement/SKILL.md) — required frontmatter, body structure, progressive disclosure pattern

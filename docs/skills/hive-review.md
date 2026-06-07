@@ -1,11 +1,23 @@
 ---
 name: hive-review
 description: "Session start ritual — run ~/src/hive-status, interpret P0/P1 output, triage advisory items, and find agent-ready issues. Use at the start of every agent session to surface blockers and the advisory queue."
+metadata:
+  type: runbook
 ---
 
 # Hive-Status — P0/P1 Triage Tool
 
 Load when: Starting your session, reviewing P0/P1 issues, or performing daily triage.
+
+## Contents
+- [Quick start](#quick-start)
+- [Hive Label Taxonomy](#hive-label-taxonomy)
+- [Hive-Status Interface](#hive-status-interface)
+- [Workflow: Daily Triage Session](#workflow-daily-triage-session)
+- [Escalation Matrix](#escalation-matrix)
+- [Integration with bonedigger and lifecycle automation](#integration-with-bonedigger-and-lifecycle-automation)
+
+---
 
 ## Quick start
 

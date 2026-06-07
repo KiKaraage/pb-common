@@ -1,6 +1,8 @@
 ---
 name: workflow-map
 description: "What each GitHub workflow in projectbluefin/common is for — validation, E2E, release, and factory-policy boundaries. Use when deciding which .github/workflows/ file to edit, understanding CI pipeline stages, or debugging a workflow failure."
+metadata:
+  type: reference
 ---
 
 # Common workflow map
@@ -13,6 +15,7 @@ Load this when you need to understand **what each GitHub workflow in `projectblu
 
 | Workflow | Purpose | When to touch it |
 |---|---|---|
+| `backfill-pipeline.yml` | Manual workflow — injects the pipeline widget into existing issues that are missing it. Accepts optional comma-separated issue numbers; auto-discovers all missing-widget issues if left blank. | Backfilling the widget after lifecycle automation is wired to a repo |
 | `validate.yml` | Main PR gate: submodule drift, `just check`, shellcheck, image-registry guard, dconf parity, pre-commit | Tightening repo-local validation or policy guards |
 | `validate-brewfiles.yaml` | Validates Brewfile correctness | Changing Brewfile structure or Brewfile validation rules |
 | `docs-quality.yml` | PR gate: skill frontmatter presence and Trail of Bits CI integration | Keeping skill docs complete and well-formed |

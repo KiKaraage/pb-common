@@ -1,6 +1,8 @@
 ---
 name: queue-dashboard
 description: "PR review and merge queue workflow for projectbluefin/common — ruleset, triage tiers, rebase patterns, and actions for each PR state. Use when reviewing open PRs, understanding the merge ruleset, or deciding how to handle a stalled PR."
+metadata:
+  type: procedure
 ---
 
 # Queue Dashboard — projectbluefin/common

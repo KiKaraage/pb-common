@@ -1,6 +1,8 @@
 ---
 name: hive
 description: "The Hive system — bonedigger/kubestellar-bot self-improvement loop, hive label taxonomy, sync schedule, and how to find agent-ready work. Use when understanding the KubeStellar Hive system or how the self-improvement loop operates."
+metadata:
+  type: reference
 ---
 
 # The Hive

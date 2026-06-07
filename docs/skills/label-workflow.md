@@ -1,9 +1,22 @@
 ---
 name: label-workflow
 description: "Label taxonomy, issue lifecycle (filed→triage→queued→claimed→done), slash commands, and the agent/human handoff model for projectbluefin factory repos. Use when understanding the issue lifecycle, triaging work, or using slash commands."
+metadata:
+  type: procedure
 ---
 
 # Label Workflow — projectbluefin Factory
+
+## Contents
+- [The one-line model](#the-one-line-model)
+- [Automation ownership](#automation-ownership)
+- [Issue lifecycle](#issue-lifecycle)
+- [Human workflow](#human-workflow)
+- [Agent workflow](#agent-workflow)
+- [Label reference](#label-reference)
+- [Epics](#epics)
+
+---
 
 ## The one-line model
 

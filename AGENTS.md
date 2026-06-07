@@ -259,6 +259,9 @@ Agent works on task
 - [ ] If no — did I create one in `docs/skills/`?
 - [ ] Is the skill file committed in **this same PR**?
 
+For the full skill file format (required frontmatter, body structure, progressive disclosure):
+[`projectbluefin/actions/.github/skills/skill-improvement/SKILL.md`](https://github.com/projectbluefin/actions/blob/main/.github/skills/skill-improvement/SKILL.md)
+
 See [`docs/skills/skill-improvement.md`](docs/skills/skill-improvement.md) for the full mandate.
 
 ## Human Decision Gates

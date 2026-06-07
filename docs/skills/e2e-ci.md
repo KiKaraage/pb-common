@@ -1,9 +1,21 @@
 ---
 name: e2e-ci
 description: "Pre/post-merge E2E CI for common — composed PR gate, testing-stream checks, masked brew setup, and quarantined scenarios. Use when debugging E2E CI failures, understanding the PR gate composition flow, or diagnosing masked brew-setup failures."
+metadata:
+  type: reference
 ---
 
 # E2E CI
+
+## Contents
+- [Post-merge E2E](#post-merge-e2e)
+- [Pre-merge gate](#pre-merge-gate)
+- [Promotion-candidate feedback loop](#promotion-candidate-feedback-loop)
+- [Known CI caveats and quarantines](#known-ci-caveats-and-quarantines)
+- [Testsuite SHA pin](#testsuite-sha-pin)
+- [Promotion pipeline e2e gate patterns](#promotion-pipeline-e2e-gate-patterns)
+
+---
 
 ## Post-merge E2E
 

@@ -1,11 +1,23 @@
 ---
 name: release-promotion
 description: "Promotion criteria, monthly release cadence, hotfix procedure, and artifact verification for projectbluefin/common. Use when cutting a release, understanding the promotion pipeline, or verifying release artifacts."
+metadata:
+  type: runbook
 ---
 
 # Release and promotion — common
 
 Load this when cutting a release, evaluating whether a monthly tag is safe to create, doing a hotfix, or verifying signed artifacts.
+
+## Contents
+- [Promotion criteria](#promotion-criteria)
+- [Monthly release cadence](#monthly-release-cadence)
+- [Emergency hotfix release](#emergency-hotfix-release)
+- [Supply chain — current state and planned improvements](#supply-chain--current-state-and-planned-improvements)
+- [Verifying a published artifact](#verifying-a-published-artifact)
+- [Weekly gated release model](#weekly-gated-release-model)
+
+---
 
 ## Promotion criteria
 

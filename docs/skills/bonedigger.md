@@ -1,6 +1,8 @@
 ---
 name: bonedigger
 description: "bonedigger + kubestellar-bot lifecycle automation — ujust report issue filing, priority escalation, and how fixes ship back to the image. Use when understanding how ujust report works, investigating bonedigger behavior, or diagnosing issue lifecycle automation."
+metadata:
+  type: reference
 ---
 
 # bonedigger & kubestellar-bot

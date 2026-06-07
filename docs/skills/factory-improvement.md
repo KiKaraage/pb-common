@@ -1,9 +1,24 @@
 ---
 name: factory-improvement
 description: "Self-improving factory loop for projectbluefin — systematically closes gaps between design and implementation until every automatable step is automated. Use when identifying automation gaps, proposing factory workflows, or auditing ACMM maturity level."
+metadata:
+  type: procedure
 ---
 
 # Factory Improvement — Self-Improving Loop
+
+## Contents
+- [When to Use](#when-to-use)
+- [When NOT to Use](#when-not-to-use)
+- [Mission](#mission)
+- [Human Gates — Intentional and Non-Negotiable](#human-gates--intentional-and-non-negotiable)
+- [The Improvement Loop](#the-improvement-loop)
+- [Pipeline Uniformity Checklist](#pipeline-uniformity-checklist)
+- [E2E Gate Matrix](#e2e-gate-matrix)
+- [Finding Open Gaps](#finding-open-gaps)
+- [What "Done" Looks Like](#what-done-looks-like)
+
+---
 
 ## When to Use
 

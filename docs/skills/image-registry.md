@@ -1,6 +1,8 @@
 ---
 name: image-registry
 description: "projectbluefin OCI image registry reference — all production images published at ghcr.io/projectbluefin/. Use when looking up image paths, tags, or registry structure."
+metadata:
+  type: reference
 ---
 
 # Image Registry

@@ -1,6 +1,8 @@
 ---
 name: skill-drift
 description: Covers how the skill-drift CI check works — when it fires, what it validates, how to write a satisfying skill update, and how to request a waiver when a skill update is not warranted. Load when the skill-drift check is failing on a PR or when deciding whether a change requires a skill file update.
+metadata:
+  type: procedure
 ---
 
 # Skill Drift
