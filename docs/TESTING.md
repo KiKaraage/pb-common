@@ -139,7 +139,6 @@ Scripts exempt from behavioral testing (shellcheck-only):
 | Script | Reason |
 |--------|--------|
 | `etc/profile.d/caffeinate.sh` | Profile.d sourced script — sets aliases only, no branching logic |
-| `etc/profile.d/open.sh` | Profile.d sourced script — alias definition only |
 | `etc/profile.d/uutils.sh` | Profile.d sourced script — PATH manipulation only |
 | `etc/profile.d/ublue-fastfetch.sh` | Profile.d sourced script — display only |
 | `etc/profile.d/ublue-motd.sh` | Profile.d sourced script — display only |
@@ -147,6 +146,8 @@ Scripts exempt from behavioral testing (shellcheck-only):
 | `usr/share/ublue-os/bling/bling.sh` | Sourced helper — sets aliases/functions, no side effects |
 | `usr/share/ublue-os/bling/env.sh` | Sourced helper — sets env vars only |
 | `usr/share/ublue-os/user-setup.hooks.d/20-dynamic-wallpaper.sh` | One-shot hook — logic tested indirectly via setup integration tests |
+| `usr/bin/ublue-motd` | Display-only wrapper — cosmetic tput/glow call, no decision logic |
+| `usr/bin/ublue-image-info.sh` | Read-only reporting wrapper — jq + rpm-ostree status, no branching that affects system state |
 
 **Adding an exemption:** add a row to this table with a one-sentence justification. Do not add exemptions for scripts with branching logic.
 
@@ -154,7 +155,7 @@ Scripts exempt from behavioral testing (shellcheck-only):
 
 | Layer | Tool | Current target |
 |-------|------|---------------|
-| Python hooks | pytest-cov | Reported per-PR (threshold TBD — see [#561](https://github.com/projectbluefin/common/issues/561)) |
+| Python hooks | pytest-cov | 80% via `--cov-fail-under=80` gate in CI |
 | Shell scripts | shellcheck | 100% of all `.sh` + `usr/bin` scripts |
 | Shell behavior | bats | All `usr/bin` scripts with branching logic |
 
