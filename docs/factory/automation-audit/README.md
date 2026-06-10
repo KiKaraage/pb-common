@@ -105,6 +105,67 @@ Follow-up work is tracked in `projectbluefin/common`:
 ## Scope notes for this rollout
 
 - The `projectbluefin/iso` repo is **currently out of scope**. Items #9 and #10 above (`iso-auto-rebuild.yml`, `iso-dispatch-snippet.yml`) remain in this directory as **proposals only** until iso work is re-authorized.
+
+---
+
+## Keeping this audit fresh — refresh cadence
+
+This audit will bit-rot quickly if not maintained. Future agents picking up audit work should run a **drift verification pass** before adding new findings or executing any phase.
+
+### When to run a drift refresh
+
+- **Always** before continuing audit work in a new session
+- **Always** before opening a PR that claims to close an audit-tracked issue
+- **At least monthly** as a standalone pass (sets the next-iteration baseline)
+
+### Drift-verification protocol (one batch, ~5 minutes)
+
+Run these checks against the live state. Compare results to the README's Executive Summary and the per-doc claims:
+
+```bash
+# 1. Workflow counts (audit currently claims 116 / 7 in-scope repos)
+for r in bluefin bluefin-lts common dakota actions iso bonedigger housekeeping; do
+  n=$(ls ~/src/$r/.github/workflows/*.yml 2>/dev/null | wc -l); echo "$r: $n"
+done
+
+# 2. promote-testing-to-main.yml triplication (audit claims 875 LoC: 343+349+183)
+for r in bluefin bluefin-lts dakota; do
+  wc -l ~/src/$r/.github/workflows/promote-testing-to-main.yml 2>/dev/null
+done
+
+# 3. @main reusable-workflow refs (audit claims 12 = 4 × 3, soon → 0 after #585/#586)
+for r in bluefin bluefin-lts dakota; do
+  echo "== $r =="; grep -rEh '@main\b' ~/src/$r/.github/workflows/ 2>/dev/null | grep -oE 'projectbluefin/actions/[^@ ]+@main' | sort -u
+done
+
+# 4. CODEOWNERS presence (audit claims iso/bonedigger missing — PRs in flight via #589)
+for r in iso bonedigger; do
+  gh api repos/projectbluefin/$r/contents/.github/CODEOWNERS -i 2>&1 | head -1
+done
+
+# 5. Branch protection per repo (the Human Gates table)
+for r in bluefin bluefin-lts common dakota actions; do
+  reviews=$(gh api repos/projectbluefin/$r/branches/main/protection 2>/dev/null | jq -r '.required_pull_request_reviews.required_approving_review_count // "none"')
+  echo "$r: required reviews=$reviews"
+done
+```
+
+### When drift is found
+
+1. Update affected docs in this directory (README counts, consistency-audit numbers, manual-touchpoints denominators).
+2. Add a row to [`results.tsv`](results.tsv) describing the drift refresh.
+3. If the drift surfaces a **new** factory gap, file a tracking issue in `projectbluefin/common` linking back to the audit doc, then add it to the **Tracking Issues** table above.
+4. Do **not** invent new audit dimensions during a drift pass — keep that for a separate, deliberate iteration.
+
+### Don't get sidetracked
+
+This audit's roadmap is the spec. The drift pass keeps the spec accurate. Implementation of remaining items (notably C1 — `reusable-promote.yml`) is **separate work**. Resist the urge to:
+
+- Expand audit scope mid-drift-pass (file a follow-up issue instead)
+- Mix doc cleanup with implementation work in the same PR
+- Add new audit artifacts to this directory without a corresponding tracking issue
+
+The audit is small-and-current, not big-and-stale. Keep it that way.
 - T4 (Dakota build machine) is BLOCKED on hardware ([common#497](https://github.com/projectbluefin/common/issues/497)).
 - T7 (MERGERAPTOR secret provisioning) is BLOCKED on human-only secret admin work.
 

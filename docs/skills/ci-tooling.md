@@ -78,6 +78,8 @@ Internal reusable workflow refs use a coordinated policy, not blanket SHA pinnin
 - `lifecycle-caller.yml` files pin `projectbluefin/common/.github/workflows/lifecycle.yml@<SHA>` — Renovate manages those SHA updates
 - The old `projectbluefin/bonedigger/.github/workflows/lifecycle.yml@main` exemption was retired when lifecycle ownership moved into `common`
 - Other internal `projectbluefin/` refs follow repo-local policy comments — read the comment before converting
+
+**Audit-pin guidance (2026-06-10):** Even though the `no-floating-action-tags` hook exempts `projectbluefin/*` refs (negative lookahead), the [automation audit](../factory/automation-audit/consistency-audit.md) consolidation item C2 recommends pinning them to a SHA anyway. Reason: a floating `@main` ref makes upstream behavior changes propagate silently on the next workflow run; a SHA-pin makes Renovate open an explicit PR you can review. Tracked via `projectbluefin/common#585` (bluefin) and `#586` (bluefin-lts). Apply the same convention to any new image-repo workflow that consumes `projectbluefin/actions` reusable workflows.
 - Coordinate with maintainers before changing an internal ref policy
 
 ---
