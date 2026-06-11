@@ -1,22 +1,24 @@
 # Automation Audit — Implementation Roadmap
 
+> **Status as of 2026-06-11:** All phases except Phase 5 (ISO, `iso` repo out of scope) are deployed. The artifact YAML files in this directory are live in their target repos — do **not** re-deploy them. They are kept as reference only.
+>
 > Prioritized by impact. Highest automation gain first.
 
 ## Quick Reference
 
-| Phase | Artifact(s) | Deploy to | Effort | Blocks |
-|---|---|---|---|---|
-| **1** | `actions-v1-tag-update.yml` | `actions/.github/workflows/` | 30 min | Nothing |
-| **2** | `cliff.toml` + `release-with-cliff.yml` | `common/` root + workflows | 1h | Nothing |
-| **3** | `retry-action.yml` | `actions/actions/retry/` | 1h | Nothing |
-| **4** | `check-token-health-action.yml` | `actions/actions/check-token-health/` | 1h | Nothing |
-| **5** | `iso-auto-rebuild.yml` + `iso-dispatch-snippet.yml` | `iso/.github/workflows/` + image repos | 2h | Dispatch token |
-| **6** | `build-upgraded.yml` | `common/.github/workflows/build.yml` | 4h | ~~Maintainer decision on #513~~ **Unblocked** — [#513](https://github.com/projectbluefin/common/issues/513) closed 2026-06-09 |
-| **7** | `dakota-cache-warm.yml` | `dakota/.github/workflows/` | 30 min | Nothing |
+| Phase | Status | Artifact(s) | Deployed in |
+|---|---|---|---|
+| **1** | ✅ | `actions-v1-tag-update.yml` | [actions#154](https://github.com/projectbluefin/actions/pull/154) |
+| **2** | ✅ | `cliff.toml` + `release-with-cliff.yml` | [common#592](https://github.com/projectbluefin/common/pull/592) |
+| **3** | ✅ | `retry-action.yml` | [actions#155](https://github.com/projectbluefin/actions/pull/155) |
+| **4** | ✅ | `check-token-health-action.yml` | [actions#156](https://github.com/projectbluefin/actions/pull/156) |
+| **5** | 🔴 | `iso-auto-rebuild.yml` + `iso-dispatch-snippet.yml` | Out of scope — iso repo |
+| **6** | ✅ | `build-upgraded.yml` | [common#595](https://github.com/projectbluefin/common/pull/595) |
+| **7** | ✅ | `dakota-cache-warm.yml` | [dakota#782](https://github.com/projectbluefin/dakota/pull/782) |
 
 ---
 
-## Phase 1: v1 Tag Auto-Update (30 min)
+## Phase 1: v1 Tag Auto-Update ✅ DEPLOYED
 
 **What:** After every merge to `main` in `projectbluefin/actions`, auto-update the `v1` tag.
 
@@ -32,7 +34,7 @@
 
 ---
 
-## Phase 2: git-cliff Changelog (1 hour)
+## Phase 2: git-cliff Changelog ✅ DEPLOYED
 
 **What:** Replace raw `git log` in `common/release.yml` with structured git-cliff output.
 
@@ -48,7 +50,7 @@
 
 ---
 
-## Phase 3: Retry Composite Action (1 hour)
+## Phase 3: Retry Composite Action ✅ DEPLOYED
 
 **What:** Add a reusable retry-with-backoff action to `projectbluefin/actions`.
 
@@ -63,7 +65,7 @@
 
 ---
 
-## Phase 4: Token Health Check (1 hour)
+## Phase 4: Token Health Check ✅ DEPLOYED
 
 **What:** Composite action that validates token auth/scopes/rate-limit at workflow start.
 
@@ -78,7 +80,7 @@
 
 ---
 
-## Phase 5: ISO Auto-Rebuild (2 hours)
+## Phase 5: ISO Auto-Rebuild 🔴 OUT OF SCOPE
 
 **What:** Automatically rebuild ISOs when :stable is promoted.
 
@@ -99,23 +101,17 @@
 
 ---
 
-## Phase 6: Supply Chain Upgrade (4 hours)
+## Phase 6: Supply Chain Upgrade ✅ DEPLOYED
 
 **What:** Keyless signing + SBOM + SLSA L2 + CVE scan for `common/build.yml`.
 
-**Steps:**
-1. ~~**Get maintainer approval on #513**~~ — ✅ [#513](https://github.com/projectbluefin/common/issues/513) closed 2026-06-09; Phase 6 is unblocked and ready to implement
-2. Verify `id-token: write` is available (it is — already in current permissions)
-3. Replace `build.yml` with `build-upgraded.yml`:
-   - Remove `SIGNING_SECRET` usage → keyless cosign
-   - Add Trivy scan step
-   - Add SBOM generation + attach
-   - Add provenance attestation
-4. Update `docs/skills/release-promotion.md` verification commands
-5. After shipping: remove `SIGNING_SECRET` from org secrets (or keep as backup)
-6. Update cosign.pub → document new keyless verification command
+**Deployed:** [common#595](https://github.com/projectbluefin/common/pull/595) — keyless OIDC live, `SIGNING_SECRET` removed from org secrets. `build-upgraded.yml` is now the live `build.yml`.
 
-**Validation:**
+**Bugs fixed during deployment:**
+- **Permissions starvation:** `id-token: write` was missing at the calling workflow level — OIDC tokens were silently empty, causing cosign to fail with an unhelpful auth error.
+- **Wrong `workflow_run` trigger:** workflow was listening for `workflow_run: [build]` but the actual workflow name is `Build and Push` — trigger never fired.
+
+**Verification:**
 ```bash
 # Verify keyless signature
 cosign verify \
@@ -130,64 +126,56 @@ oras discover ghcr.io/projectbluefin/common:latest
 gh attestation verify oci://ghcr.io/projectbluefin/common:latest --repo projectbluefin/common
 ```
 
-**Design decision required:** Maintainer must approve removing key-based signing. Recommend keeping `cosign.pub` for signature verification of historical images.
-
-**Risk:** High. Wrong OIDC config = unsigned images in production. Implement on a branch, test with `pr-` tag first.
-
 ---
 
-## Phase 7: Dakota Cache Warm (30 min)
+## Phase 7: Dakota Cache Warm ✅ DEPLOYED
 
 **What:** Scheduled builds to keep BST remote cache hot.
 
-**Steps:**
-1. Copy `dakota-cache-warm.yml` to `dakota/.github/workflows/`
-2. PR to `dakota` → merge
-3. Wait for first scheduled run Monday morning
+**Deployed:** [dakota#782](https://github.com/projectbluefin/dakota/pull/782) — scheduled cache-warm workflow live.
 
 **Validation:** After first run, check if subsequent `build.yml` runs complete faster.
-
-**Risk:** None. Cache warming is additive — worst case, it fails and logs a warning.
 
 ---
 
 ## Dependency Graph
 
 ```
-Phase 1 (v1 tag)        ── no deps ──→ immediate
-Phase 2 (git-cliff)     ── no deps ──→ immediate
-Phase 3 (retry action)  ── no deps ──→ immediate
-Phase 4 (token health)  ── no deps ──→ immediate
-Phase 5 (ISO dispatch)  ── needs dispatch token (admin setup) ──→ after admin action
-Phase 6 (supply chain)  ── ✅ [#513](https://github.com/projectbluefin/common/issues/513) closed 2026-06-09 ──→ ready to implement
-Phase 7 (cache warm)    ── no deps ──→ immediate
+Phase 1 (v1 tag)        ✅ deployed — actions#154
+Phase 2 (git-cliff)     ✅ deployed — common#592
+Phase 3 (retry action)  ✅ deployed — actions#155
+Phase 4 (token health)  ✅ deployed — actions#156
+Phase 5 (ISO dispatch)  🔴 out of scope — iso repo not authorized
+Phase 6 (supply chain)  ✅ deployed — common#595
+Phase 7 (cache warm)    ✅ deployed — dakota#782
 ```
 
-**Critical path:** Phases 1-4 and 7 can all be done in parallel (1 day total). Phase 5 needs an admin to create a token. Phase 6 needs a maintainer to approve the signing change.
+All deployable phases are live. Phase 5 remains blocked on iso repo authorization.
 
 ---
 
 ## Success Metrics
 
-| Before Audit | After Phase 1-4,7 | After All Phases |
-|---|---|---|
-| 91% automated | 93% automated | 97% automated |
-| 11 manual touchpoints | 7 manual touchpoints | 4 intentional human gates |
-| Key-based signing | Key-based signing | Keyless OIDC signing |
-| No SBOM/provenance | No SBOM/provenance | SBOM + SLSA L2 |
-| Manual ISO builds | Manual ISO builds | Event-driven ISO builds |
-| Raw git log changelog | Structured changelog | Structured changelog |
-| No retry/self-heal | Retry + token health | Full self-healing |
+| Before Audit | After All Phases (current) |
+|---|---|
+| 91% automated | ~97% automated |
+| 11 manual touchpoints | 4 intentional human gates |
+| Key-based signing | Keyless OIDC signing ✅ |
+| No SBOM/provenance | SBOM + SLSA L2 ✅ |
+| Manual ISO builds | Manual ISO builds (Phase 5 out of scope) |
+| Raw git log changelog | Structured changelog ✅ |
+| No retry/self-heal | Retry + token health ✅ |
 
 ---
 
-## Tracking Issues to File
+## Deployed — Tracking Issues Filed and Closed
 
-After review, file these as GitHub issues in `projectbluefin/common`:
+All tracking issues below were filed in `projectbluefin/common` and resolved:
 
-1. `feat(ci): auto-update v1 tag in actions repo` — kind/improvement, area/ci
-2. `feat(ci): integrate git-cliff for structured changelogs` — kind/improvement, area/ci
-3. `feat(ci): add retry composite action to actions` — kind/improvement, area/ci
-4. `feat(ci): add token health check action` — kind/improvement, area/ci
-5. `feat(ci): automate ISO rebuilds on stable promotion` — kind/improvement, area/ci, priority/p1
-6. `feat(ci): dakota BST cache-warm workflow` — kind/improvement, area/ci
+1. `feat(ci): auto-update v1 tag in actions repo` — ✅ [actions#154](https://github.com/projectbluefin/actions/pull/154)
+2. `feat(ci): integrate git-cliff for structured changelogs` — ✅ [common#592](https://github.com/projectbluefin/common/pull/592)
+3. `feat(ci): add retry composite action to actions` — ✅ [actions#155](https://github.com/projectbluefin/actions/pull/155)
+4. `feat(ci): add token health check action` — ✅ [actions#156](https://github.com/projectbluefin/actions/pull/156)
+5. `feat(ci): automate ISO rebuilds on stable promotion` — 🔴 out of scope (iso repo)
+6. `feat(ci): supply chain upgrade (keyless OIDC + SBOM + SLSA L2)` — ✅ [common#595](https://github.com/projectbluefin/common/pull/595)
+7. `feat(ci): dakota BST cache-warm workflow` — ✅ [dakota#782](https://github.com/projectbluefin/dakota/pull/782)

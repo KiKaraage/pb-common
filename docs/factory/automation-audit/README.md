@@ -1,6 +1,6 @@
 # Automation Audit — Project Bluefin Factory
 
-> Generated: 2026-06-09 (initial), supplemented 2026-06-10 (consistency + test plan + mantra), refreshed 2026-06-10 (drift verification — counts and gates reconciled to live state).
+> Generated: 2026-06-09 (initial), supplemented 2026-06-10 (consistency + test plan + mantra), refreshed 2026-06-10 (drift verification), updated 2026-06-11 (all phases deployed — post-deployment sweep).
 >
 > **Mantra:** *Humans approve design, security, and merge. Everything else is automated, self-healing, and non-blocking.*
 
@@ -14,19 +14,26 @@ When this principle conflicts with convenience, the principle wins. New workflow
 
 ## Executive Summary
 
-The projectbluefin factory is **91% automated** across **124 workflows in 7 in-scope repos** (common 12, bluefin 27, bluefin-lts 17, dakota 23, actions 26, testsuite 10, iso 9; bonedigger 2 and housekeeping 0 are out of audit scope). *(automation % will be recalculated on next full inventory)* This audit identifies the remaining gaps and provides ready-to-deploy artifacts to reach **≥97% automation** with only the documented intentional human gates remaining.
+The projectbluefin factory is **~97% automated** across **124 workflows in 7 in-scope repos** (common 12, bluefin 27, bluefin-lts 17, dakota 23, actions 26, testsuite 10, iso 9; bonedigger 2 and housekeeping 0 are out of audit scope). All 7 phases are now deployed — except Phase 5 (ISO auto-rebuild, `iso` repo out of scope). Only the documented intentional human gates remain.
 
-**Key findings:**
-- ISO builds are the weakest link (25% automation — fully manual dispatch); fix artifacts retained as **proposals only** (the `iso` repo is currently out of scope for this rollout)
-- Supply chain tooling (SBOM, SLSA, keyless signing) is designed but not deployed
-- Self-healing patterns (retry, token health) don't exist yet
-- 4 of 7 non-deterministic steps are already mitigated
-- **C1 (partial):** `promote-testing-to-main.yml` consolidation in progress — dakota migrated (183 → 29 LoC via [actions#157](https://github.com/projectbluefin/actions/pull/157) + [dakota#788](https://github.com/projectbluefin/dakota/pull/788)); bluefin (343 LoC) and bluefin-lts (353 LoC) adoption pending one observed promotion cycle
-- **0 `@main` reusable-workflow refs** remain — bluefin ([bluefin#484](https://github.com/projectbluefin/bluefin/pull/484)), bluefin-lts, and dakota all cleaned ✅
-- `iso` and `bonedigger` now have `CODEOWNERS` ✅ ([#589](https://github.com/projectbluefin/common/issues/589) resolved via [bonedigger#22](https://github.com/projectbluefin/bonedigger/pull/22) + [iso#60](https://github.com/projectbluefin/iso/pull/60))
-- `bluefin-lts`, `dakota`, `actions`, `iso`, and `bonedigger` have no in-repo `renovate.json`; they rely on the org-level [`projectbluefin/renovate-config`](https://github.com/projectbluefin/renovate-config) preset — this is the **intended pattern**, not a gap. Audit doc clarified rather than tracked as a defect.
+**Deployed phases (as of 2026-06-11):**
 
-**Total effort to implement all recommendations:** 9 working days (original 7 phases + 1 day consistency consolidation + 1 day test plan)
+| Phase | Item | PR |
+|---|---|---|
+| 1 ✅ | v1 tag auto-update | [actions#154](https://github.com/projectbluefin/actions/pull/154) |
+| 2 ✅ | git-cliff + e2e release gate | [common#592](https://github.com/projectbluefin/common/pull/592) |
+| 3 ✅ | Retry composite action | [actions#155](https://github.com/projectbluefin/actions/pull/155) |
+| 4 ✅ | Token health check action | [actions#156](https://github.com/projectbluefin/actions/pull/156) |
+| 5 🔴 | ISO auto-rebuild | Out of scope — `iso` repo; proposal artifacts kept for reference |
+| 6 ✅ | Keyless OIDC signing + SBOM + SLSA L2 | [common#595](https://github.com/projectbluefin/common/pull/595) — `SIGNING_SECRET` removed |
+| 7 ✅ | Dakota BST cache-warm | [dakota#782](https://github.com/projectbluefin/dakota/pull/782) |
+| C1 ⚠️ | `reusable-promote.yml` adoption | [actions#157](https://github.com/projectbluefin/actions/pull/157) + [dakota#788](https://github.com/projectbluefin/dakota/pull/788) + [bluefin-lts#161](https://github.com/projectbluefin/bluefin-lts/pull/161) ✅; **bluefin pending** |
+| C2 ✅ | SHA-pin all `@main` reusable refs | bluefin, bluefin-lts, dakota all clean |
+| C3 ✅ | Renovate grouping rule for actions | [common#593](https://github.com/projectbluefin/common/pull/593) |
+
+**What was fixed this session (2026-06-11):**
+- **Permissions starvation bug:** the supply chain workflow was missing `id-token: write` at the calling level — OIDC tokens were silently empty, causing cosign to fail with an unhelpful auth error rather than a clear permissions message.
+- **Wrong `workflow_run` trigger:** the supply chain workflow was hooked to `workflow_run: [build]` but the triggering workflow is named `Build and Push` — the trigger never fired. Fixed to match the correct workflow name.
 
 ---
 
@@ -43,21 +50,23 @@ The projectbluefin factory is **91% automated** across **124 workflows in 7 in-s
 | 7 | [`consistency-audit.md`](consistency-audit.md) | Per-image code duplication inventory + consolidation roadmap (C1–C5) |
 | 8 | [`publish-loop-test-plan.md`](publish-loop-test-plan.md) | L0–L5 verification strategy: chaos, dry-run, idempotency, artifact checks |
 
-## Implementation Artifacts (Ready to Deploy)
+## Deployed Artifacts (Reference)
 
-| # | File | Deploy to | Addresses |
+These files in this directory are now deployed. They are kept as **reference only** — do **not** re-deploy them. See the PR links for the live versions.
+
+| # | File | Deployed to | PR |
 |---|---|---|---|
-| 9 | [`iso-auto-rebuild.yml`](iso-auto-rebuild.yml) | `iso/.github/workflows/` *(proposal — iso repo currently out of scope)* | T2: Manual ISO builds |
-| 10 | [`iso-dispatch-snippet.yml`](iso-dispatch-snippet.yml) | Image repo `execute-release.yml` *(proposal — depends on iso PR)* | T2: Dispatch trigger |
-| 11 | [`actions-v1-tag-update.yml`](actions-v1-tag-update.yml) | `actions/.github/workflows/` | T6: Manual tag push |
-| 12 | [`build-upgraded.yml`](build-upgraded.yml) | `common/.github/workflows/build.yml` | T8: Key-based signing |
-| 13 | [`cliff.toml`](cliff.toml) | `common/` root | T9: Raw changelog |
-| 14 | [`release-with-cliff.yml`](release-with-cliff.yml) | `common/.github/workflows/release.yml` | T9: + E2E gate |
-| 15 | [`retry-action.yml`](retry-action.yml) | `actions/actions/retry/` | FM1, FM2: No retry |
-| 16 | [`check-token-health-action.yml`](check-token-health-action.yml) | `actions/actions/check-token-health/` | FM3: Token expiry |
-| 17 | [`dakota-cache-warm.yml`](dakota-cache-warm.yml) | `dakota/.github/workflows/` | ND1: Cold-start timeout |
-| 18 | [`reusable-promote.yml`](reusable-promote.yml) | `actions/.github/workflows/` | C1: 875 lines of triplicated `promote-testing-to-main.yml` |
-| 19 | [`dry-run-publish-loop.sh`](dry-run-publish-loop.sh) | `actions/scripts/chaos/` (or run locally) | L4: Idempotency probe + artifact verification |
+| 9 | [`iso-auto-rebuild.yml`](iso-auto-rebuild.yml) | `iso/.github/workflows/` *(proposal — iso out of scope)* | N/A |
+| 10 | [`iso-dispatch-snippet.yml`](iso-dispatch-snippet.yml) | *(proposal — iso out of scope)* | N/A |
+| 11 | [`actions-v1-tag-update.yml`](actions-v1-tag-update.yml) | `actions/.github/workflows/` | [actions#154](https://github.com/projectbluefin/actions/pull/154) |
+| 12 | [`build-upgraded.yml`](build-upgraded.yml) | `common/.github/workflows/build.yml` | [common#595](https://github.com/projectbluefin/common/pull/595) |
+| 13 | [`cliff.toml`](cliff.toml) | `common/` root | [common#592](https://github.com/projectbluefin/common/pull/592) |
+| 14 | [`release-with-cliff.yml`](release-with-cliff.yml) | `common/.github/workflows/release.yml` | [common#592](https://github.com/projectbluefin/common/pull/592) |
+| 15 | [`retry-action.yml`](retry-action.yml) | `actions/actions/retry/` | [actions#155](https://github.com/projectbluefin/actions/pull/155) |
+| 16 | [`check-token-health-action.yml`](check-token-health-action.yml) | `actions/actions/check-token-health/` | [actions#156](https://github.com/projectbluefin/actions/pull/156) |
+| 17 | [`dakota-cache-warm.yml`](dakota-cache-warm.yml) | `dakota/.github/workflows/` | [dakota#782](https://github.com/projectbluefin/dakota/pull/782) |
+| 18 | [`reusable-promote.yml`](reusable-promote.yml) | `actions/.github/workflows/` | [actions#157](https://github.com/projectbluefin/actions/pull/157) |
+| 19 | [`dry-run-publish-loop.sh`](dry-run-publish-loop.sh) | `actions/scripts/chaos/` | Future work (L3 chaos suite) |
 
 ---
 
@@ -93,10 +102,11 @@ Follow-up work is tracked in `projectbluefin/common`:
 | [#583](https://github.com/projectbluefin/common/issues/583) | Phase 2: git-cliff + e2e release gate | ✅ Merged: [common#592](https://github.com/projectbluefin/common/pull/592) |
 | [#583](https://github.com/projectbluefin/common/issues/583) | Phase 3: retry composite action | ✅ Merged: [actions#155](https://github.com/projectbluefin/actions/pull/155) |
 | [#583](https://github.com/projectbluefin/common/issues/583) | Phase 4: token health check action | ✅ Merged: [actions#156](https://github.com/projectbluefin/actions/pull/156) |
-| [#583](https://github.com/projectbluefin/common/issues/583) | Phase 7: dakota BST cache-warm | ✅ Merged: [dakota#787](https://github.com/projectbluefin/dakota/pull/787) |
+| [#583](https://github.com/projectbluefin/common/issues/583) | Phase 6: supply chain upgrade (keyless OIDC + SBOM + SLSA L2) | ✅ Merged: [common#595](https://github.com/projectbluefin/common/pull/595); `SIGNING_SECRET` removed |
+| [#583](https://github.com/projectbluefin/common/issues/583) | Phase 7: dakota BST cache-warm | ✅ Merged: [dakota#782](https://github.com/projectbluefin/dakota/pull/782) |
 | [#583](https://github.com/projectbluefin/common/issues/583) | C2: pin @main refs to SHA in dakota | ✅ Merged: [dakota#786](https://github.com/projectbluefin/dakota/pull/786) |
 | [#587](https://github.com/projectbluefin/common/issues/587) | C3: Renovate grouping rule for projectbluefin/actions | ✅ Merged: [common#593](https://github.com/projectbluefin/common/pull/593) |
-| [#584](https://github.com/projectbluefin/common/issues/584) | C1: reusable-promote.yml | ✅ Partial: [actions#157](https://github.com/projectbluefin/actions/pull/157) merged (reusable workflow live), [dakota#788](https://github.com/projectbluefin/dakota/pull/788) merged (canary caller, 183→30 LoC). bluefin-lts and bluefin adoption pending one observed promotion cycle. |
+| [#584](https://github.com/projectbluefin/common/issues/584) | C1: reusable-promote.yml | ✅ Partial: [actions#157](https://github.com/projectbluefin/actions/pull/157) merged (reusable workflow live), [dakota#788](https://github.com/projectbluefin/dakota/pull/788) merged (183→30 LoC), [bluefin-lts#161](https://github.com/projectbluefin/bluefin-lts/pull/161) merged ✅. **bluefin adoption still pending.** |
 
 *Open a tracking issue for any new finding from drift verification before adding it to the consistency or roadmap docs.*
 

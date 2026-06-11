@@ -8,20 +8,20 @@ This document complements [`publish-loop-spec.md`](publish-loop-spec.md) (the *w
 
 ## Verification levels
 
-| Level | Frequency | Surface | Owner |
-|---|---|---|---|
-| L0 — static | every PR | YAML lint, schema, SHA-pin | pre-commit |
-| L1 — unit | every PR | reusable workflow inputs, composite action contracts | `actions/unit-tests.yml` |
-| L2 — integration | every merge | end-to-end build → test → push → sign on a synthetic image | `actions/migration-test.yml` (extend) |
-| L3 — chaos | weekly | inject failures (rate limit, token expiry, cache poison) and verify self-heal | new `actions/chaos-suite.yml` |
-| L4 — full publish | monthly + on-promotion | real `:testing` → `:stable` on all four image streams | existing `promotion-candidate-e2e.yml` + `post-merge-e2e.yml` |
-| L5 — installability | per stable | ISO produced, boots, OS upgrades cleanly | testsuite + `installability` gate ([#423](https://github.com/projectbluefin/common/issues/423) ✅ closed — gate implemented) |
+| Level | Frequency | Surface | Owner | Status |
+|---|---|---|---|---|
+| L0 — static | every PR | YAML lint, schema, SHA-pin | pre-commit | ✅ Active |
+| L1 — unit | every PR | reusable workflow inputs, composite action contracts | `actions/unit-tests.yml` | ✅ Active |
+| L2 — integration | every merge | end-to-end build → test → push → sign on a synthetic image | `actions/migration-test.yml` (extend) | ✅ Active |
+| L3 — chaos | weekly | inject failures (rate limit, token expiry, cache poison) and verify self-heal | new `actions/chaos-suite.yml` | ⏳ Future work — not yet implemented |
+| L4 — full publish | monthly + on-promotion | real `:testing` → `:stable` on all four image streams | existing `promotion-candidate-e2e.yml` + `post-merge-e2e.yml` | ✅ Active |
+| L5 — installability | per stable | ISO produced, boots, OS upgrades cleanly | testsuite + `installability` gate ([#423](https://github.com/projectbluefin/common/issues/423) ✅ closed — gate implemented) | ✅ Gate implemented |
 
-L0–L2 are mostly in place. L3, L4 partial, L5 missing — defined below.
+L0–L2 active. L3 not yet implemented (future work — see below). L4 active. L5 gate implemented ([#423](https://github.com/projectbluefin/common/issues/423) closed).
 
-## L3 — Chaos suite (new)
+## L3 — Chaos suite (⏳ Future work — not yet implemented)
 
-**Goal:** Validate that every failure mode in [`failure-modes.md`](failure-modes.md) results in a self-heal, not a stuck pipeline.
+**Status:** Not implemented. The chaos suite is defined below as a specification for a future session. Do not assume it is running.
 
 ### Test matrix
 
