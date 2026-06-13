@@ -35,6 +35,7 @@ Agent-specific instruction files (`.github/copilot-instructions.md`, `AGENTS.md`
 | [qa.md](qa.md) | QA model, test coverage matrix, promotion gates by repo, hardware gap, running tests |
 | [hive-review.md](hive-review.md) | `~/src/hive-status` — session start, P0/P1 triage, hive label taxonomy |
 | [queue-dashboard.md](queue-dashboard.md) | PR review and merge queue workflow — ruleset (1 approval, squash, ALLGREEN queue), triage tiers, rebase patterns, submodule boundary policy |
+| [brew-lifecycle.md](brew-lifecycle.md) | How to add/remove system-default Homebrew packages via brew-preinstall, the preinstall.d content-addressed lifecycle, what can move to brew, and per-shell starship init pattern |
 | [release-promotion.md](release-promotion.md) | **common** release and promotion — criteria, monthly cadence, hotfix process, artifact verification, supply chain (keyless cosign, SBOM, SLSA L2 live as of 2026-06-11) |
 | [workflow-map.md](workflow-map.md) | What each `common` GitHub workflow is for — validation, E2E, release, and factory-policy boundaries |
 | [e2e-ci.md](e2e-ci.md) | Pre/post-merge and promotion-candidate E2E CI for common — composed PR gate, testing-stream smoke/common checks, masked brew setup, quarantined scenarios |
