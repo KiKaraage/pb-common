@@ -102,7 +102,7 @@ brew "prometheus"
 # TiKV
 # brew "tiup" # Disabled since Pingcap tap haven't been updated for 4 years.
 # TiUP can be installed via their official bash script on https://tiup.io
-# Meanwhile, TiDB is available via `brew install dumpling`
+# Meanwhile, Dumpling (TiDB data export tool) is available via `brew install dumpling`
 
 # Vitess
 brew "vitess"
