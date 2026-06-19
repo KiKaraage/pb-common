@@ -181,20 +181,20 @@ rows:
           banner-text-valign: start
           banner-height: 400
           appids:
-            - net.codelogistics.letters
-            - re.sonny.Eloquent
-            - page.codeberg.libre_menu_editor.LibreMenuEditor
-            - app.fotema.Fotema
             - be.alexandervanhee.gradia
             - app.drey.Damask
+            - io.github.sitraorg.sitra
+            - io.speedofsound.SpeedOfSound
+            - app.fotema.Fotema
+            - org.gnome.gitlab.YaLTeR.VideoTrimmer
+            - io.github.tanaybhomia.Whisp
+            - re.sonny.Eloquent
+            - de.schmidhuberj.DieBahn
+            - org.gnome.gitlab.cheywood.Pulp
             - io.github.pleromix.IceBox
             - com.github.ADBeveridge.Raider
-            - org.gnome.gitlab.YaLTeR.VideoTrimmer
-            - org.gnome.gitlab.cheywood.Buffer
             - io.github.kelvinnovais.Kasasa
-            - de.schmidhuberj.DieBahn
-            - com.github.maoschanz.drawing
-            - io.github.sitraorg.sitra
+            - net.codelogistics.letters
 
   - sections:
       - expand-horizontally: true
@@ -295,21 +295,22 @@ rows:
           banner-text-valign: end
           banner-height: 400
           appids:
-            - com.slack.Slack
-            - md.obsidian.Obsidian
-            - io.gitlab.theevilskeleton.Upscaler
-            - io.github.alainm23.planify
-            - org.blender.Blender
+            - com.collaboraoffice.Office
             - org.onlyoffice.desktopeditors
             - org.libreoffice.LibreOffice
-            - org.gimp.GIMP
-            - org.kde.krita
-            - org.inkscape.Inkscape
+            - com.slack.Slack
+            - org.gnome.Fractal
+            - org.blender.Blender
             - io.github.nokse22.Exhibit
-            - com.logseq.Logseq
+            - org.gimp.GIMP
+            - org.inkscape.Inkscape
+            - org.kde.krita
+            - io.gitlab.theevilskeleton.Upscaler
             - org.audacityteam.Audacity
             - org.ardour.Ardour
-            - org.gnome.Fractal
+            - io.github.alainm23.planify
+            - md.obsidian.Obsidian
+            - com.logseq.Logseq
 
   - sections:
       - expand-horizontally: true
@@ -385,7 +386,6 @@ rows:
             - io.github.nozwock.Packet
             - org.gnome.gitlab.somas.Apostrophe
             - org.cockpit_project.CockpitClient
-            - org.gnome.gitlab.cheywood.Pulp
             - io.github.vikdevelop.SaveDesktop
             - org.gnome.World.PikaBackup
             - org.fedoraproject.MediaWriter
@@ -485,6 +485,7 @@ rows:
             - org.turbowarp.TurboWarp
             - as.may.moat
             - app.drey.MultiplicationPuzzle
+            - io.github.josephmawa.SpellingBee
 
   - sections:
       - expand-horizontally: true
@@ -516,4 +517,3 @@ rows:
             - io.github.qwersyk.Newelle
             - ai.jan.Jan
             - ink.whis.Whis
-            - io.speedofsound.SpeedOfSound
