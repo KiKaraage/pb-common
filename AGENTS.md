@@ -37,6 +37,10 @@ You are an agent in this loop. Your work compounds. See [`docs/skills/hive.md`](
 
 ## Agent fast path
 
+> **You have the source code. Read it before writing anything about it.**
+> Image names, tags, workflow outputs, config values — all derivable from source.
+> `gh api`, `read`, `bash` are here. Guessing is never acceptable.
+
 ```
 1. docs/SKILL.md              # find the skill for your task
 3. docs/factory/agentic-model.md  # cross-repo rules if working across repos
