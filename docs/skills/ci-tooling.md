@@ -201,6 +201,16 @@ Full path-to-skill mapping and waiver process: [`skill-drift.md`](./skill-drift.
 
 If you add new OCI image pins to `Containerfile`, also update `.github/renovate.json5` so Renovate can keep them current. Applies to both `FROM` and `COPY --from=` references. An untracked pin silently goes stale.
 
+### Org-wide Renovate runner
+
+The factory runs self-hosted Renovate from `projectbluefin/renovate-config` (not from each image repo). It runs every 3 hours. To trigger immediately:
+
+```bash
+gh workflow run renovate.yml --repo projectbluefin/renovate-config
+```
+
+Image repos do **not** have their own `renovate.yml` caller workflow — Renovate runs org-wide from the central config repo using `RENOVATE_APP_ID` + `RENOVATE_PRIVATE_KEY` secrets (separate from `MERGERAPTOR_APP_ID`/`MERGERAPTOR_PRIVATE_KEY`).
+
 ---
 
 ## Trivy scan-image archive input
@@ -824,3 +834,16 @@ with:
 ```
 
 Use the token without `owner`/`repositories` restrictions — the mergeraptor app is installed org-wide and the default token already has access.
+
+### notify-downstream token in common/build.yml
+
+The `notify-downstream` job in `build.yml` uses `secrets.MERGERAPTOR_APP_ID` + `secrets.MERGERAPTOR_PRIVATE_KEY`. These secrets must be accessible to the `common` repo. If they are not, the job fails with:
+
+```
+The 'client-id' (or deprecated 'app-id') input must be set to a non-empty string.
+```
+
+Note: `vars.MERGERAPTOR_APP_ID` (variable, not secret) does **not** resolve in common — do not use it here. The correct ref is `secrets.MERGERAPTOR_APP_ID`. Verify at:
+https://github.com/organizations/projectbluefin/settings/secrets/actions
+
+The job has `continue-on-error: true` — build stays green while dispatches fail. Downstream tracking falls back to Renovate (bluefin/bluefin-lts) and dakota's daily cron.
