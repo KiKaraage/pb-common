@@ -109,38 +109,29 @@ cosign verify-attestation \
 
 ## How common updates reach downstream :testing builds
 
-When `common/build.yml` publishes a new `common:latest`, three paths trigger downstream `:testing` builds:
+When `common/build.yml` publishes a new `common:latest`, downstream `:testing` builds are triggered by two canonical paths. There is **no** direct dispatch from `build.yml` — the `notify-downstream` job was removed (it used fragile cross-repo token dispatch that silently failed across 9+ commits of churn).
 
-### bluefin and bluefin-lts (Renovate digest bump)
+### bluefin and bluefin-lts (Renovate digest bump — canonical)
 
-`projectbluefin/renovate-config` runs a self-hosted Renovate runner every 3 hours. When it detects a new `ghcr.io/projectbluefin/common:latest` digest it opens `chore(deps): update common digest` PRs against the `testing` branch in bluefin and bluefin-lts. These PRs automerge immediately (`automerge: true, schedule: ["at any time"]`), which triggers `build-image-testing.yml` → `:testing` published.
+`projectbluefin/renovate-config` runs a self-hosted Renovate runner every 3 hours. When it detects a new `ghcr.io/projectbluefin/common:latest` digest it opens `chore(deps): update common digest` PRs against the `testing` branch in bluefin and bluefin-lts. These PRs automerge immediately (`automerge: true, schedule: ["at any time"]`), which triggers `build-image-testing.yml` → downstream build fires.
+
+Max propagation delay: ~3 hours after `common:latest` publishes.
 
 **To poke Renovate manually:**
 ```bash
 gh workflow run renovate.yml --repo projectbluefin/renovate-config
 ```
 
-**`track-common.yml`** exists on the `testing` branch of bluefin and bluefin-lts. It can be triggered directly via `workflow_dispatch` (requires the workflow to exist on the repo's default branch — currently only on `testing`, so `workflow_dispatch` is blocked until merged to `main`).
+### dakota (BST daily cron — canonical)
 
-### dakota (BST git ref track)
+Dakota does **not** consume `common` as an OCI digest. It tracks common via a `git_repo` BST source in `elements/bluefin/common.bst` pinned to a git ref on `common/main`. `track-bst-sources.yml` in dakota runs daily at 06:00 UTC and accepts `workflow_dispatch`.
 
-Dakota does **not** consume `common` as an OCI digest. It tracks common via a `git_repo` BST source in `elements/bluefin/common.bst` pinned to a git ref on `common/main`. `track-bst-sources.yml` in dakota:
-- Listens to `repository_dispatch: common-updated` (dispatched by `common/build.yml` `notify-downstream` job)
-- Runs daily at 06:00 UTC (`cron: '0 6 * * *'`)
-- Accepts `workflow_dispatch` with a `group` input
-
-When it tracks `bluefin/common.bst`, it bumps the git ref and opens an automerging PR to dakota's `testing` branch.
+Max propagation delay: ~24 hours.
 
 **To poke manually:**
 ```bash
 gh workflow run track-bst-sources.yml --repo projectbluefin/dakota -f group=auto-merge
 ```
-
-### notify-downstream job status
-
-`build.yml`'s `notify-downstream` job has `continue-on-error: true`. It uses `secrets.MERGERAPTOR_APP_ID` + `secrets.MERGERAPTOR_PRIVATE_KEY`. If these secrets are not accessible in the `common` repo context, all dispatches silently fail and fallback paths (Renovate + dakota's daily cron) handle propagation with a delay.
-
-**Verify the token works** by checking the `Notify downstream` job conclusion in the latest `build.yml` run on `main`. If it fails, check org-level secret/variable scoping.
 
 ---
 
