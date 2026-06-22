@@ -33,6 +33,7 @@ Load this when you need to understand **what each GitHub workflow in `projectblu
 > - `backfill-pipeline.yml` — issue widget backfill. If needed, run as a local script; do not add CI plumbing for a one-shot task.
 > - `skill-drift.yml` — process convention as CI gate; violates AGENTS.md policy. See `ci-tooling.md` § Skill drift detection.
 > - `docs-quality.yml` — skill frontmatter enforcement belongs in agent review, not CI.
+> - `renovate-automerge.yml` — deleted in [#783](https://github.com/projectbluefin/common/pull/783). Renovate uses `platformAutomerge: true` in `renovate.json`; GitHub's native auto-merge + merge queue replaces it. Do not re-add a workflow-based automerge mechanism.
 
 ## Mental model
 

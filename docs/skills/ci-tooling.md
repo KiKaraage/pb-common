@@ -827,17 +827,39 @@ The ephemeral `gh-readonly-queue/...` refs are not resolvable by `upload-sarif`.
 
 ---
 
-## renovate-automerge.yml — secrets and trigger requirements
+## Renovate automerge — how it works in `common`
 
-The `renovate-automerge.yml` workflow uses the `mergeraptor` GitHub App to bypass the required-review branch protection for Renovate/mergeraptor PRs.
+`common` uses `platformAutomerge: true` in `renovate.json`. Renovate calls GitHub's native
+auto-merge API when it opens an eligible PR (digest/pin/patch/minor). GitHub's auto-merge
+enqueues the PR into the merge queue once all required checks pass — no separate workflow needed.
 
-**Secrets required:** `MERGERAPTOR_APP_ID` and `MERGERAPTOR_PRIVATE_KEY` must be available to the repo. Set these at the **org level** (projectbluefin → Settings → Secrets → Actions) with "All repositories" access — never per-repo, or every new repo needs manual setup.
+**Why `platformAutomerge` instead of a workflow:** `common/main` has a merge queue ruleset.
+`github-actions[bot]` cannot bypass the merge queue, so any workflow attempting a direct
+`--squash` merge would fail. `platformAutomerge` avoids this: Renovate is a bypass actor in the
+PR review ruleset (actor_id 2740, bypass_mode: pull_request) and uses GitHub's own auto-merge
+API, which the merge queue respects natively.
 
-**Trigger:** The workflow fires via `workflow_run` when the "Build" workflow completes. It only works correctly when Build runs as a `pull_request` event (Renovate opens a PR → Build runs → `workflow_run` fires → automerge merges).
+**Eligible update types:** `digest`, `pin`, `patch`, `minor`. Major bumps require human review.
 
-**Do not trigger via `workflow_dispatch`** on Renovate branches — `workflow_dispatch` causes Build to attempt push/sign (non-`pull_request` path), which fails on Renovate branches and causes the automerge to skip (conclusion != 'success').
+**Bypass actors in the PR review ruleset:**
+- OrganizationAdmin — `bypass_mode: always`
+- Renovate (actor_id 2740) — `bypass_mode: pull_request`
+- Mergeraptor (actor_id 3069633) — `bypass_mode: pull_request`
 
-For stuck Renovate PRs where CI already passed before the workflow existed on main: merge directly with `gh pr merge <N> --squash --admin`.
+**Stuck Renovate PR (required checks passed but PR not merging):** Check that auto-merge is
+enabled on the PR (`gh pr view <N> --json autoMergeRequest`). If null, Renovate hasn't enabled
+it — check the `matchUpdateTypes` rule. If enabled but not merging, verify all required checks
+(`validate`, `Build and push image (x86_64)`, `Build and push image (aarch64)`) show SUCCESS or
+SKIPPED. Org admin can force-merge via:
+```bash
+gh api repos/projectbluefin/common/pulls/<N>/merge -X PUT -f merge_method=squash
+```
+
+**`build.yml` paths-ignore and workflow-only Renovate PRs:** Renovate bumps GitHub Actions SHAs
+via digest PRs that only change `.github/workflows/**`. The `pull_request` trigger in `build.yml`
+intentionally does NOT ignore `.github/workflows/**` so required Build checks always run on these
+PRs and the merge queue can satisfy them. The `push` trigger DOES ignore `.github/workflows/**`
+to avoid redundant post-merge rebuilds.
 
 ---
 
