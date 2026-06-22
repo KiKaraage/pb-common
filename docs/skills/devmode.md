@@ -1,15 +1,31 @@
 ---
 name: devmode
-description: Turn on Developer Mode wizard for Bluefin. In-place developer setup via ujust devmode — developer experience (DX) is a product feature, not a separate image. Covers tool selection, progress bar, group config, and marker file.
+description: Use when working on Bluefin Developer Mode docs or UX. In-place developer setup via ujust devmode — developer experience (DX) is a product feature, not a separate image. Covers tool selection, progress bar, group config, marker file, and canonical user-facing commands.
 ---
 
 # devmode — Turn on Developer Mode
 
+## When to Use
+
+- Updating docs or UX around Bluefin Developer Mode
+- Verifying the canonical user-facing command for developer setup
+- Checking what the devmode wizard installs and how it behaves
+- Auditing legacy `-dx` references or stale rebase guidance
+
+## When NOT to Use
+
+- Writing Dakota-specific overrides — Dakota should fall through to common unless there is a real Dakota-only need
+- Documenting `ujust toggle-devmode` as the primary user-facing command
+- Recommending `rpm-ostree install` as a fallback for Developer Mode tooling
+- Describing any Developer Mode flow as a rebase to a `-dx` image
+
 ## What this is
 
-`ujust devmode` (alias: `ujust toggle-devmode`) is a local setup wizard that installs a developer stack on any Bluefin image in-place. **There is no -dx image rebase.** The -dx image variant is retired.
+`ujust devmode` is a local setup wizard that installs a developer stack on any Bluefin image in-place. **There is no -dx image rebase.** The -dx image variant is retired.
 
 File: `system_files/bluefin/usr/share/ublue-os/just/system.just`
+
+`ujust toggle-devmode` is a legacy compatibility name. Docs and UX should point users to `ujust devmode` or `bctl --screen developer`.
 
 ---
 
@@ -110,8 +126,44 @@ The old `image-flavor =~ dx` gate was removed. That gate was dead once the -dx i
 ## Known caveats
 
 - **Docker daemon**: `brew install docker` provides the CLI. The `moby-engine` daemon must be present in the base image as a layered system package. If `dockerd` is missing, docker CLI works but containers won't run. Verify moby is in the Containerfile before shipping.
-- **incus via brew**: availability on Linuxbrew is not guaranteed. The `setup-incus` recipe falls back gracefully with instructions to `rpm-ostree install incus` if brew fails.
+- **incus via brew**: incus is installed via `brew install incus` inside the devmode wizard. If Homebrew is unavailable or that install step fails, the wizard fails at that step. There is no separate recipe and no fallback.
 - **`gum choose --no-limit` section headers**: header strings (e.g. `── Docker ───`) are selectable items. They are filtered out in the summary/install logic by using specific `grep -q` patterns that don't match header text. Do not use item names that are substrings of header text.
+
+---
+
+## Core Process
+
+1. Treat `ujust devmode` as the canonical entrypoint; only mention `toggle-devmode` as legacy compatibility context.
+2. Verify the current implementation in `system_files/bluefin/usr/share/ublue-os/just/system.just` before documenting behavior.
+3. Describe Developer Mode as an in-place setup flow: `bctl --screen developer` first when available, otherwise the gum wizard.
+4. Document optional tools exactly as the wizard presents them, including incus via `brew install incus`.
+5. Reject stale fallbacks: no `setup-incus` recipe, no `rpm-ostree install`, no `incus-distrobox` guidance.
+6. If touching downstream overrides, prefer removing stale overrides so common's implementation remains the source of truth.
+
+## Common Rationalizations
+
+- **"`toggle-devmode` is still there, so docs can recommend it."**
+  No. It is a compatibility name, not the canonical UX.
+- **"If brew fails we should tell users to layer packages."**
+  No. Bluefin docs should not recommend `rpm-ostree install` as the escape hatch here.
+- **"Developer Mode means rebasing to a special image."**
+  No. The `-dx` image path is retired.
+
+## Red Flags
+
+- Docs that tell users to run `ujust toggle-devmode`
+- Any mention of a `setup-incus` recipe
+- Any `rpm-ostree install incus` fallback
+- Any suggestion that Developer Mode rebases to a `-dx` image
+- Dakota-specific docs or overrides that assume `dakota-dx` exists
+
+## Verification
+
+- [ ] User-facing docs recommend `ujust devmode` or `bctl`, not `ujust toggle-devmode`
+- [ ] No docs mention `setup-incus`
+- [ ] No docs recommend `rpm-ostree install` for Developer Mode tooling
+- [ ] Bluefin Developer Mode is described as in-place setup, not image rebasing
+- [ ] Any downstream override still matches common's current implementation or is removed
 
 ---
 
