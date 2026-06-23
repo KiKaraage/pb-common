@@ -67,15 +67,17 @@ Humans decide when a new secret is needed. This is a security gate, not a conven
 
 ## What "autonomous" means for promotions
 
-The factory is autonomous **up to the promotion PR**. For bluefin, bluefin-lts, and dakota:
+The factory is **fully automated** end-to-end. For bluefin, bluefin-lts, and dakota:
 
 1. Builds fire automatically (push to `testing` / Renovate digest bump / daily cron)
-2. Post-build E2E runs automatically
-3. On E2E pass, `promote-testing-to-main.yml` opens/updates a squash PR automatically
-4. The release gate cosign-verifies and labels the PR `release/ready` automatically
-5. **A maintainer merges the PR.** This is a deliberate human checkpoint.
+2. Post-build E2E runs automatically (bluefin: required gate; bluefin-lts/dakota: advisory)
+3. `promote-testing-to-main.yml` opens/updates a squash PR automatically on every push to `testing` and on the daily cron
+4. The PR enters the merge queue and auto-merges once required checks pass (0 approvals required)
+5. `execute-release.yml` fires on `push: main` → skopeo-copies `:testing` → `:stable` → GitHub release
 
-Do not report the factory as broken because a promotion PR is open and waiting. Do not report it as autonomous if the PR is not merging. The correct status is: "promotion PR open, awaiting maintainer merge."
+**Releases are daily at 04:00 UTC** when `testing` differs from `main`. If there is nothing new, the promote workflow is a no-op.
+
+Do not report the factory as broken because a promotion PR is open — the merge queue processes it automatically.
 
 ## Branch targets
 
@@ -125,8 +127,8 @@ After a PR merges: `git worktree remove <path> --force && git branch -D <branch>
 PR → testing branch
   └─ build.yml (push trigger, paths-ignore) → BST/container build → :testing published
   └─ e2e gate (post-merge-e2e.yml or testsuite) → pass/fail
-  └─ promote-testing-to-main.yml → opens auto/promote-testing-to-main PR (weekly or on e2e pass)
-       └─ human merges PR → main → publish stable tags
+  └─ promote-testing-to-main.yml → opens auto/promote-testing-to-main PR (daily cron or on e2e pass)
+       └─ merge queue auto-merges PR → main → execute-release.yml publishes :stable
 ```
 
 ### paths-ignore pattern (required in build.yml push trigger)
