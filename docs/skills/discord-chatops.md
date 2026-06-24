@@ -18,10 +18,20 @@ webhooks for read-only notifications.
 
 ## Channel layout
 
-| Channel | Type | What posts here |
-|---|---|---|
-| `#factory` | Text | CI failures (GitHub webhook), Botkube lifecycle commands |
-| `#releases` | Forum | Release threads (one thread per release, via composite action) |
+| Channel | Type | ID | What posts here |
+|---|---|---|---|
+| `#factory` | Text | `1519233261438631936` | CI failures (GitHub webhook), Botkube lifecycle commands |
+| `#releases` | Forum | TBD (human must create) | Release threads (one thread per release, via composite action) |
+
+## Webhook IDs
+
+| Webhook | Channel | ID | Secret name |
+|---|---|---|---|
+| `factory-ci` | `#factory` | `1519233290643705936` | `DISCORD_FACTORY_WEBHOOK` |
+| releases webhook | `#releases` | TBD | `DISCORD_RELEASES_WEBHOOK` |
+
+Human must create `#releases` forum channel (Discord UI: Server Settings > Channels > + > Forum > name: releases),
+then create a webhook on it and store the URL as `DISCORD_RELEASES_WEBHOOK` in GitHub org secrets.
 
 ## MCP server (agent Discord management)
 
@@ -112,19 +122,22 @@ Add a GitHub webhook in repo settings:
 
 No code changes needed.
 
-## Implementation plan
+## Implementation status
 
-Full plan: `/var/home/jorge/.copilot/session-state/eae49b79-71ff-4e41-84af-43afd84e502a/plan.md`
-
-Tasks in order:
-1. Human: create Discord bot app, invite to server
-2. Agent (mcp-discord): create #factory, #releases (Forum), Maintainer role, webhooks
-3. Human: create GitHub App "Bluefin Botkube", install on factory repos, store k8s secrets
-4. Wire GitHub native webhooks to both channels (zero code)
-5. Deploy Botkube via ArgoCD in testing-lab
-6. Restrict github-dispatch to Maintainer role via Discord Developer Portal
-7. Add `discord-release-notify` composite action to projectbluefin/actions
-8. Wire into `reusable-execute-release.yml`
+| Task | Status | Notes |
+|---|---|---|
+| Discord bot app created | Done | Bot: Bluefin#0600, App ID: 1519228970032169050 |
+| `#factory` text channel | Done | ID: 1519233261438631936 |
+| `factory-ci` webhook | Done | ID: 1519233290643705936, store URL as `DISCORD_FACTORY_WEBHOOK` in org secrets |
+| `#releases` Forum channel | Pending human | Discord UI: Server Settings > Channels > + > Forum > name: releases |
+| `Maintainer` role | Pending human | Discord Server Settings > Roles > Create Role |
+| GitHub App "Bluefin Botkube" | Pending human | github.com/organizations/projectbluefin/settings/apps |
+| k8s secrets on ghost | Pending human | See Secrets section above |
+| GitHub native webhooks | Pending human | Wire each repo to #factory and #releases (see "Adding a new repo") |
+| Botkube ArgoCD manifests | PR open | projectbluefin/testing-lab feat/botkube-chatops |
+| `discord-release-notify` action | PR open | projectbluefin/actions feat/discord-release-notify |
+| Restrict github-dispatch to Maintainer | Pending human | Discord Developer Portal > App Commands > Permissions |
+| `DISCORD_RELEASES_WEBHOOK` org secret | Pending human | After #releases created, create webhook, store URL in org secrets |
 
 ## Where each file lives
 
