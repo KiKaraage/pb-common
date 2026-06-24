@@ -89,6 +89,7 @@ See the full OEM pattern section below. Quick checklist:
 - [ ] Version bump acknowledged: existing users re-run the versioned block — all code inside must be safe to re-run (brew install is idempotent; dconf writes and systemctl enables are safe to re-run)
 - [ ] WirePlumber fragments: written to user fragment dir (`~/.config/wireplumber/wireplumber.conf.d/`), not global system dir
 - [ ] Hook is executable and follows naming convention (`NN-description`)
+- [ ] **Brew availability early-exit**: brew-independent payloads (config file copies, WirePlumber fragments, etc.) are placed BEFORE the `BREW_BIN` check, not after it — if they are after, they silently don't run on first login when brew isn't yet available (PR #760)
 
 ### test addition
 
@@ -265,6 +266,45 @@ WirePlumber user-space audio profiles must be written to the **user** fragment d
 ```
 
 The copy should be idempotent — check if the target exists and matches before writing, or use `install -m 644` which overwrites safely.
+
+### Brew availability early-exit trap
+
+User-setup hooks typically check for brew early and exit if it isn't available yet. This creates a **silent failure mode** for brew-independent work placed after the check:
+
+```bash
+# Common hook structure — DANGER ZONE
+BREW_BIN="$(brew --prefix)/bin/brew" 2>/dev/null
+if [[ ! -x "${BREW_BIN}" ]]; then
+    exit 0   # ← early exit: brew not ready yet
+fi
+
+# ... versioned brew installs ...
+
+# WirePlumber config copy — has NO brew dependency
+# BUG: this never runs on first login when brew isn't present yet
+install -m 644 "${SCRIPT_DIR}/51-hardware.conf" \
+    "${HOME}/.config/wireplumber/wireplumber.conf.d/"
+```
+
+**Fix**: move brew-independent payloads (config file copies, DMI-gated fragments) **before** the `BREW_BIN` early-exit:
+
+```bash
+# Correct order: brew-independent work first
+if is_target_hardware; then
+    install -m 644 "${SCRIPT_DIR}/51-hardware.conf" \
+        "${HOME}/.config/wireplumber/wireplumber.conf.d/"
+fi
+
+# Then gate on brew
+BREW_BIN="$(brew --prefix)/bin/brew" 2>/dev/null
+if [[ ! -x "${BREW_BIN}" ]]; then
+    exit 0
+fi
+
+# brew-dependent versioned work below
+```
+
+**Review signal**: if a hook installs a config file after a `BREW_BIN` check and the config has no brew dependency, flag it — the config silently won't install on first login (PR #760: `51-framework-desktop.conf` hit this).
 
 ---
 
