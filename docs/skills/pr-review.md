@@ -153,9 +153,70 @@ journalctl -u <unit-name>.service -b
 
 ### Baseline vs delta
 
-Before merging, confirm the **baseline** (current image) and the **post-merge** behavior:
-1. Boot current testing image → collect `systemctl --failed` and relevant journal lines
-2. Merge PR → rebuild triggers automatically → boot new image → compare
+**Always establish a baseline before the PR merges.** Boot the current testing image, record the state of the units/files the PR touches, then re-verify after rebuild. This catches unintended regressions and confirms all new artifacts landed.
+
+**Step 1 — collect baseline** (pre-merge, on current testing image):
+
+```bash
+# For a systemd unit PR — capture current state of every touched unit/file
+systemctl cat uupd.timer 2>/dev/null || echo "MISSING"
+systemctl cat uupd.service 2>/dev/null || echo "MISSING"
+cat /usr/lib/systemd/system/uupd.service.d/10-bluefin.conf 2>/dev/null || echo "MISSING"
+cat /usr/lib/udev/rules.d/99-uupd-on-ac.rules 2>/dev/null || echo "MISSING"
+systemctl cat uupd-on-ac.service 2>/dev/null || echo "MISSING"
+```
+
+**Step 2 — merge PR, wait for rebuild** (`bluefin:testing` rebuilds automatically on push to main)
+
+**Step 3 — verify delta** (post-merge, on new testing image):
+
+```bash
+# Confirm every expected artifact is present and has the right content
+systemctl cat uupd.timer          # check OnCalendar value
+systemctl cat uupd.service        # should still be static (no [Install])
+systemctl is-enabled uupd.timer   # should still be enabled
+cat /usr/lib/systemd/system/uupd.service.d/10-bluefin.conf  # new drop-in
+cat /usr/lib/udev/rules.d/99-uupd-on-ac.rules               # new udev rule
+systemctl cat uupd-on-ac.service                             # new unit
+```
+
+#### Worked example — PR #768 (uupd AC-aware scheduling)
+
+**Baseline state** (bluefin:testing before PR, workflow `pr768-uupd-baseline-lxknq`):
+
+| Artifact | Baseline state |
+|---|---|
+| `uupd.timer` | **Exists** — daily at 04:00, `Persistent=true`, `RandomizedDelaySec=15m` |
+| `uupd.service` | Exists, static (no `[Install]`), timer-driven — correct |
+| `uupd.service.d/10-bluefin.conf` | **MISSING** — PR adds it |
+| `99-uupd-on-ac.rules` | **MISSING** — PR adds it |
+| `uupd-on-ac.service` | **MISSING** — PR adds it |
+| `uupd-manual.service` | Exists, untouched by PR |
+| `ConditionACPower=` on uupd.service | **Absent** — drop-in adds it |
+
+PR #768 **replaces** the existing daily timer with a 6h schedule — this is a deliberate behavior change, not an error. Knowing the baseline prevents false-alarming on "timer changed".
+
+**Post-merge verification checklist for PR #768:**
+
+```bash
+# 1. Timer fires every 6h
+systemctl cat uupd.timer | grep OnCalendar
+# expected: OnCalendar=*-*-* 00,06,12,18:00
+
+# 2. Drop-in adds ConditionACPower
+cat /usr/lib/systemd/system/uupd.service.d/10-bluefin.conf | grep ConditionACPower
+# expected: ConditionACPower=true
+
+# 3. udev rule present
+ls -la /usr/lib/udev/rules.d/99-uupd-on-ac.rules
+
+# 4. AC-triggered unit present
+systemctl cat uupd-on-ac.service
+
+# 5. Timer still enabled, uupd.service still static
+systemctl is-enabled uupd.timer       # enabled
+systemctl cat uupd.service | grep '\[Install\]'  # should be absent (timer-driven)
+```
 
 ---
 
