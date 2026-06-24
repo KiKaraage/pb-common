@@ -309,6 +309,99 @@ ls /var/lib/flatpak/.appstream-refreshed 2>/dev/null && echo "EXISTS" || echo "a
 
 ---
 
+## Quick-start lab test YAML
+
+Copy-paste these to submit targeted lab tests via the Argo MCP or `kubectl apply`. Always lint first with `argo-mcp-lint_workflow` before submitting.
+
+### systemd unit / shared script — all 3 variants
+
+Submit one per variant. Use `smoke` suite for a fast first pass; add `system` if you need full bootc contract verification.
+
+```yaml
+# bluefin:testing — smoke + system
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: pr-lab-bluefin-
+  namespace: argo
+spec:
+  workflowTemplateRef:
+    name: bluefin-qa-pipeline
+  arguments:
+    parameters:
+    - name: image
+      value: ghcr.io/projectbluefin/bluefin
+    - name: image-tag
+      value: testing
+    - name: suites
+      value: smoke,system
+    - name: namespace
+      value: bluefin-test
+```
+
+For lts: set `image: ghcr.io/projectbluefin/bluefin-lts` and `image-tag: lts-testing`.
+
+### NVIDIA overlay — non-nvidia baseline check
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: pr-lab-nvidia-baseline-
+  namespace: argo
+spec:
+  workflowTemplateRef:
+    name: bluefin-qa-pipeline
+  arguments:
+    parameters:
+    - name: image
+      value: ghcr.io/projectbluefin/bluefin
+    - name: image-tag
+      value: testing
+    - name: suites
+      value: smoke
+    - name: namespace
+      value: bluefin-test
+```
+
+> ⚠️ This only confirms the nvidia service is absent on non-nvidia images (correct). To verify the actual change, run on a bluefin-dx or nvidia-enabled image variant after merge.
+
+### Log collection pattern
+
+Poll and collect logs immediately — log pods are recycled after workflow completion:
+
+```bash
+# Poll until Succeeded/Failed
+argo_get_workflow name=<workflow-name> namespace=argo
+
+# Collect WHILE Running or immediately after Succeeded
+argo_logs_workflow name=<workflow-name> namespace=argo
+
+# Key commands to run inside the VM (via workflow steps or virsh guest-exec):
+systemctl --failed --no-pager
+journalctl -p warning -b --no-pager -n 200
+systemctl is-enabled <unit-name>.service
+systemctl cat <unit-name>.service
+```
+
+> ⚠️ Do NOT use `argo_wait_workflow` — it issues a blocking MCP call that times out before most workflows complete. Use `argo_get_workflow` to poll.
+
+### Stale image gotcha
+
+If the containerdisk was built before a recent PR merged, new files from that PR won't be present even though they're in the source. Always cross-check:
+
+```bash
+# Check when the current testing image was built
+skopeo inspect docker://ghcr.io/projectbluefin/bluefin:testing | jq '.Created'
+
+# Cross-check: when did the PR that added the file merge?
+gh pr view <N> --repo projectbluefin/common --json mergedAt
+```
+
+If the containerdisk predates the PR, the lab baseline is stale. Wait for a rebuild (nightly at 02:00 UTC) or note it clearly in the report.
+
+---
+
 ## CI gate interpretation
 
 | Check name | What it means | If it fails |
@@ -522,6 +615,57 @@ assert_output --partial "systemctl enable"
 # GOOD — verifies the full invocation including --now and service name
 assert_output --partial "systemctl enable --now some.service"
 ```
+
+---
+
+## PR review report template
+
+Use this format when reporting findings from a review session. One table row per PR, followed by per-PR detail blocks for any findings.
+
+### Summary table
+
+| PR | Title | Type | Code review | Lab result | CI | Verdict |
+|---|---|---|---|---|---|---|
+| #NNN | short title | `systemd unit` / `OEM hook` / etc | ✅ Clean / ⚠️ N findings | ✅ Green / ⚠️ Stale image / ❌ Failed | ✅ / ❌ transient | ✅ Ready / ⚠️ Needs fix / 🔁 Re-trigger CI |
+
+### Per-PR detail block
+
+```
+### PR #NNN — <title>
+
+**Type:** <PR type from taxonomy>
+**Branch:** <branch-name>
+**CI:** <status — all green / compose failed (transient GHCR 504) / ghost-lab pending>
+
+**Code review findings:**
+- [SEVERITY] Description — file:line — suggested fix
+
+**Lab baseline** (workflow: <name>, phase: <Succeeded/Failed>):
+| Artifact | Baseline state |
+|---|---|
+| `unit-name.service` | ABSENT / EXISTS (content: ...) |
+| `systemctl is-enabled` | enabled / disabled |
+| `systemctl --failed` | Clean / mcelog only (QEMU noise) |
+
+**Post-merge verification:**
+```bash
+# paste the exact commands to verify after rebuild
+```
+
+**Verdict:** ✅ Ready to merge / ⚠️ Fix needed before merge / 🔁 Re-trigger CI / 🔬 Needs nvidia lab
+```
+
+### Example report — 2026-06-24 session
+
+| PR | Title | Type | Code review | Lab result | CI | Verdict |
+|---|---|---|---|---|---|---|
+| #785 | unit tests: check-oci-refs, bazaar-hook, hw hooks | `test addition` | ⚠️ 2 findings (weak assertions) | N/A | ✅ | ⚠️ Strengthen assertions |
+| #767 | flatpak appstream refresh every boot | `systemd unit (shared)` | ⚠️ 1 finding (`graphical.target` contextually OK; metered guard missing) | ⚠️ Service disabled in image — preset not yet built in | ❌ CI stale (GHCR 504) | ⚠️ Add metered guard, re-trigger CI |
+| #768 | uupd AC-aware update scheduling | `systemd unit (shared)` | ⚠️ 1 finding (rate-limit consumes burst on brief AC plug) | ✅ Baseline captured — 3 new artifacts absent as expected | ✅ | ⚠️ Rate-limit logic needs review |
+| #769 | nvidia flatpak runtime sync | `systemd unit (nvidia)` + `skill doc` | ⚠️ 1 finding (failed flatpak update not retried on restart) | ✅ Green — service absent on non-nvidia (correct) | ⚠️ ghost-lab stale pending | ⚠️ Fix retry logic; requeue ghost-lab |
+| #760 | Framework Desktop WirePlumber OEM hook | `OEM hardware hook` + `skill doc` | ⚠️ 1 finding (wireplumber install after BREW_BIN check — won't run on first login) | ⚠️ Stale image — 20-oem-brew.sh not in testing build | ✅ | ⚠️ Move wireplumber install before brew check |
+| #790 | chore(deps): update actions/cache | `dependencies` | N/A (Renovate) | N/A | ✅ | ✅ Auto-merge on CI pass |
+| #789 | chore(deps): update taiki-e/install-action digest | `dependencies` | N/A (Renovate) | N/A | ✅ | ✅ Auto-merge on CI pass |
 
 ---
 
