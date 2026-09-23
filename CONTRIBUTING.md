@@ -61,3 +61,6 @@ Full layer validation (the `common` behave suite from
 - [`docs/contributing/reviewer-ladder.md`](docs/contributing/reviewer-ladder.md) —
   draft proposal for a four-rung contributor ladder (Triager, Domain
   Reviewer); unadopted until a maintainer decision.
+- [`docs/contributing/triage-sla.md`](docs/contributing/triage-sla.md) —
+  draft proposal for a 14-day first-response SLA on human-authored issues and
+  a triage-first review-allocation rule; unadopted until a maintainer decision.
