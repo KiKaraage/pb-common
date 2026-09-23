@@ -61,3 +61,6 @@ Full layer validation (the `common` behave suite from
 - [`docs/contributing/reviewer-ladder.md`](docs/contributing/reviewer-ladder.md) —
   draft proposal for a four-rung contributor ladder (Triager, Domain
   Reviewer); unadopted until a maintainer decision.
+- [`docs/contributing/agent-lane-throttle.md`](docs/contributing/agent-lane-throttle.md) —
+  draft proposal for demand-side throttling of agent-filed PRs under review
+  backlog; unadopted until a maintainer decision.
