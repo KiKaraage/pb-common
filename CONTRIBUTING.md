@@ -67,3 +67,6 @@ Full layer validation (the `common` behave suite from
 - [`docs/contributing/triage-sla.md`](docs/contributing/triage-sla.md) —
   draft proposal for a 14-day first-response SLA on human-authored issues and
   a triage-first review-allocation rule; unadopted until a maintainer decision.
+- [`docs/contributing/agent-lane-throttle.md`](docs/contributing/agent-lane-throttle.md) —
+  draft proposal for demand-side throttling of agent-filed PRs under review
+  backlog; unadopted until a maintainer decision.
