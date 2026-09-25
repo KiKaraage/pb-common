@@ -107,3 +107,4 @@ When a critical fix needs a versioned tag outside the monthly window:
 | [references/downstream-propagation.md](references/downstream-propagation.md) | How common updates reach bluefin, bluefin-lts, and dakota `:testing` builds (Renovate + BST). |
 | [references/pr-based-release.md](references/pr-based-release.md) | PR-based squash promotion model, schedule, commit title rules, repo variants, E2E gate model, and reusable workflow patterns. |
 | [references/troubleshooting.md](references/troubleshooting.md) | Troubleshooting the testing→main squash promotion: gate stuck, UD conflicts, merge queue blocked, branch divergence, zombie publish runs, actions branch policy. |
+| [references/printer-app-evidence-matrix.md](references/printer-app-evidence-matrix.md) | Evidence matrix for the four FSDK OCI Printer Application release contracts (source commit, digests, signature, SBOM, provenance, promotion evidence). |
