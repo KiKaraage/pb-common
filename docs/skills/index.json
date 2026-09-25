@@ -579,8 +579,8 @@
         "backlog"
       ],
       "description": "Human-decides, agent-lands PR and issue backlog review. Present one card at a time, take the human verdict, execute it immediately, then advance. Use when reviewing the PR queue or triaging the issue backlog.",
-      "version": "3.6",
-      "last_updated": "2026-09-06",
+      "version": "3.7",
+      "last_updated": "2026-09-25",
       "doc_type": "procedure"
     },
     {
