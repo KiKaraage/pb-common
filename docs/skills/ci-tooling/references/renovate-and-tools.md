@@ -6,19 +6,16 @@ Part of [ci-tooling](../SKILL.md) — Renovate OCI digest tracking, Trivy scan-i
 
 ## Renovate OCI digest tracking
 
-`Containerfile` has two OCI image pins tracked by Renovate:
+`.github/renovate.json5` restricts `enabledManagers` to `["github-actions", "custom.regex"]`, so Renovate's built-in `dockerfile` manager — which does natively parse both `FROM` and directly-referenced `COPY --from=<image>` lines — never runs against `Containerfile` in this repo. Only pins that have a matching custom regex manager get tracked:
 
-1. `docker.io/library/alpine:latest@sha256:...` via Renovate's built-in `dockerfile` manager
-2. `ghcr.io/ublue-os/bluefin-wallpapers-gnome:latest@sha256:...` via a custom regex manager in `.github/renovate.json5`
+- `ghcr.io/ublue-os/bluefin-wallpapers-gnome:latest@sha256:...` (`COPY --from=`) has a custom regex manager in `.github/renovate.json5`
+- `docker.io/library/alpine:latest@sha256:...` (`FROM`) has **no** matching custom manager, so it is currently untracked by Renovate
 
-### Why both managers exist
-
-- `FROM docker.io/library/alpine:latest@sha256:...` is a standard Dockerfile dependency — the built-in `dockerfile` manager handles it
-- `COPY --from=ghcr.io/ublue-os/bluefin-wallpapers-gnome:latest@sha256:...` is not covered by the default parser — a custom regex manager tracks it
+The custom regex manager for the wallpapers pin exists because `enabledManagers` excludes `dockerfile`, not because Renovate's default parser is unable to handle `COPY --from=`.
 
 ### Rule when adding OCI pins
 
-If you add new OCI image pins to `Containerfile`, also update `.github/renovate.json5` so Renovate can keep them current. Applies to both `FROM` and `COPY --from=` references. An untracked pin silently goes stale.
+If you add new OCI image pins to `Containerfile`, also add or update a matching custom regex manager in `.github/renovate.json5` so Renovate can keep them current. Applies to both `FROM` and `COPY --from=` references — neither is covered automatically while `dockerfile` stays out of `enabledManagers`. An untracked pin silently goes stale.
 
 ### Org-wide Renovate runner
 
