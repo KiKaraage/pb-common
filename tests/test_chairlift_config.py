@@ -79,19 +79,17 @@ FORBIDDEN_BOOTC_FLAGS = (
 # lives in .github/workflows/validate-chairlift-config.yaml, which fetches
 # upstream's config.yml and fails on drift.
 KNOWN_GROUPS = {
-    "system_page": {
-        "system_info_group",
-        "bootc_status_group",
-        "health_group",
-        "channel_group",
+    "agents_page": {
+        "agents_group",
     },
     "updates_page": {
-        "update_all_group",
+        "automatic_updates_group",
         "bootc_updates_group",
-        "sysupdate_updates_group",
         "flatpak_updates_group",
         "brew_updates_group",
         "brew_trust_group",
+        "channel_group",
+        "bootc_status_group",
     },
     "applications_page": {
         "applications_installed_group",
@@ -103,19 +101,24 @@ KNOWN_GROUPS = {
     },
     "maintenance_page": {
         "maintenance_cleanup_group",
-        "maintenance_brew_group",
-        "maintenance_flatpak_group",
-        "maintenance_optimization_group",
+        "maintenance_freespace_group",
         "reset_group",
     },
     "features_page": {
         "features_group",
         "dx_group",
         "gaming_group",
-        "ai_group",
-        "troubleshooting_group",
     },
-    "help_page": {"help_resources_group"},
+    "livery_page": {
+        "account_group",
+        "livery_app_grid_group",
+        "livery_foundation_group",
+        "livery_dock_group",
+    },
+    "help_page": {
+        "troubleshooting_group",
+        "help_resources_group",
+    },
 }
 
 # Group field names, mirrored from upstream GroupConfig's yaml struct tags.
@@ -130,8 +133,8 @@ KNOWN_FIELDS = {
     "issues",
     "chat",
     "bundles_paths",
-    "ai_images",
-    "ai_model",
+    "install_pulp",
+    "stage_feeds",
 }
 KNOWN_ACTION_FIELDS = {"title", "script", "sudo"}
 
@@ -332,8 +335,8 @@ def test_schema_validator_pins_the_shipped_chairlift_release():
     validator = CHAIRLIFT_VALIDATOR.read_text(encoding="utf-8")
 
     refs = re.findall(r'^CHAIRLIFT_SCHEMA_REF = "([^"]+)"$', validator, re.MULTILINE)
-    assert refs == ["v0.12.2"], (
-        f"expected exactly one CHAIRLIFT_SCHEMA_REF pinned to v0.12.2, got {refs}"
+    assert refs == ["v26.09.0-alpha.2"], (
+        f"expected exactly one CHAIRLIFT_SCHEMA_REF pinned to v26.09.0-alpha.2, got {refs}"
     )
 
     urls = re.findall(r"https://raw\.githubusercontent\.com/projectbluefin/chairlift/\S*", validator)
