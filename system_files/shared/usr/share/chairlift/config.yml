@@ -59,11 +59,9 @@ applications_page:
 maintenance_page:
   maintenance_cleanup_group:
     enabled: false
-  maintenance_brew_group:
-    enabled: true
-  maintenance_flatpak_group:
-    enabled: true
-  maintenance_optimization_group:
+  # Replaces the retired brew/flatpak/optimization cleanup groups: one routine
+  # cleanup that removes cached downloads and unused supporting software.
+  maintenance_freespace_group:
     enabled: true
 
 features_page:
