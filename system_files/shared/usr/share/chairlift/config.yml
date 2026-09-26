@@ -2,15 +2,6 @@
 # Admin overrides go in /etc/chairlift/config.yml, which takes priority.
 # Reference: https://github.com/projectbluefin/chairlift/blob/main/CONFIG.md
 
-system_page:
-  system_info_group:
-    enabled: true
-  bootc_status_group:
-    enabled: true
-  health_group:
-    enabled: true
-    app_id: io.missioncenter.MissionCenter
-
 updates_page:
   # frostyard/chairlift#54 resolved via the system-integration split
   # (frostyard/chairlift#102): the fixed /usr/libexec/bootc-update-stage
