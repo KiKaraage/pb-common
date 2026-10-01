@@ -17,33 +17,14 @@ This repo is **human-first for issues.** Humans file issues, triage them, and de
 Automated agents implement approved work — they do not self-direct triage or close issues without
 human approval.
 
-### The seven labels
+Triage and queue state are managed strictly through the canonical seven labels.
+See [`docs/skills/label-workflow.md`](docs/skills/label-workflow.md) for the full lifecycle.
 
-Triage runs on exactly seven labels. Nothing else is a workflow state, and there are no slash
-commands:
-
-| Label | Meaning |
-|---|---|
-| `1-triage` | Filed, awaiting a human read |
-| `2-discussing` | Needs a decision or a clearer spec |
-| `3-human-queue` | Accepted, queued for a person |
-| `3-clanker-queue` | Accepted, queued for an automated agent |
-| `4-review` | A pull request is awaiting review |
-| `blocked` | Waiting on human input or an external dependency |
-| `hold` | Intentionally paused |
-
-### Queueing work for an agent
-
-Add `3-clanker-queue` to a triaged issue you want an autonomous agent to implement:
-
+To queue an accepted issue for an autonomous agent:
 ```bash
 gh issue edit <number> --repo projectbluefin/common --add-label 3-clanker-queue
 ```
-
-The issue description must be clear enough to implement without follow-up questions. Vague issues
-sit in the queue indefinitely — no agent will guess at the spec.
-
-Full lifecycle: [`docs/skills/label-workflow.md`](docs/skills/label-workflow.md).
+The issue description must be clear enough to implement without follow-up questions.
 
 ## CI
 
@@ -58,21 +39,16 @@ Full layer validation (the `common` behave suite from
 - [`docs/contributing/style-guide.md`](docs/contributing/style-guide.md) —
   coding and configuration conventions for shell scripts, Just recipes,
   JSON/YAML, and the Containerfile.
-- [`docs/contributing/reviewer-ladder.md`](docs/contributing/reviewer-ladder.md) —
-  draft proposal for a four-rung contributor ladder (Triager, Domain
-  Reviewer); unadopted until a maintainer decision.
-- [`docs/contributing/hold-gate-rubric.md`](docs/contributing/hold-gate-rubric.md) —
-  draft proposal for hold-gate PR queue prioritization rubric (P0/P1/P2 risk tiers
-  and release-gate expedite lane); unadopted until a maintainer decision.
-- [`docs/contributing/triage-sla.md`](docs/contributing/triage-sla.md) —
-  draft proposal for a 14-day first-response SLA on human-authored issues and
-  a triage-first review-allocation rule; unadopted until a maintainer decision.
-- [`docs/contributing/agent-lane-throttle.md`](docs/contributing/agent-lane-throttle.md) —
-  draft proposal for demand-side throttling of agent-filed PRs under review
-  backlog; unadopted until a maintainer decision.
+- [`docs/specifications/reviewer-ladder.md`](docs/specifications/reviewer-ladder.md) —
+  draft specification for contributor ladder scaling; unadopted until maintainer approval.
+- [`docs/specifications/hold-gate-prioritization.md`](docs/specifications/hold-gate-prioritization.md) —
+  draft specification for hold-gate PR queue prioritization tiers; unadopted until maintainer approval.
+- [`docs/specifications/triage-first-response.md`](docs/specifications/triage-first-response.md) —
+  draft specification for first-response SLA on issues; unadopted until maintainer approval.
+- [`docs/specifications/agent-lane-throttle.md`](docs/specifications/agent-lane-throttle.md) —
+  draft specification for demand-side throttling of agent-filed PRs; unadopted until maintainer approval.
+- [`docs/contributing/self-collision-preflight.md`](docs/contributing/self-collision-preflight.md) —
+  draft proposal for preflight check against overlapping open PR clusters.
 - [`ACTIONS-SECURITY.md`](./ACTIONS-SECURITY.md) — organization GitHub Actions
   security baseline: top-level `permissions: {}`, SHA pinning, `pull_request_target`
   restrictions, and checksum verification.
-- [`docs/contributing/self-collision-preflight.md`](docs/contributing/self-collision-preflight.md) —
-  draft proposal for a preflight step that checks a lane's own open PRs for file
-  cluster overlap before it opens another; unadopted until a maintainer decision.
