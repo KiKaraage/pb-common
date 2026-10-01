@@ -18,23 +18,56 @@ COPY --from=ghcr.io/ublue-os/bluefin-wallpapers-gnome:latest@sha256:470572484d5b
 
 RUN apk add just curl
 
-# ChairLift's user-scoped cask does not install GSettings schemas system-wide.
-# Extract only the three schema files from the checksummed release archive;
-# the composed image runs glib-compile-schemas after overlaying system_files.
-ARG CHAIRLIFT_RELEASE=v26.09.0-alpha.2
+# ChairLift ships only as a user-scoped Homebrew cask, which cannot install
+# root-owned files. Install the pkexec helper, its PolicyKit policy and the
+# three GSettings schemas from the release archive so every image gets them
+# from common; the composed image runs glib-compile-schemas after overlaying
+# system_files. The release's checksums.txt is verified against its Sigstore
+# bundle, signed by ChairLift's release workflow for exactly this tag, and the
+# archive against its checksums.txt entry, so a bump changes CHAIRLIFT_RELEASE only.
+ARG CHAIRLIFT_RELEASE=v26.09.0-alpha.4
+ARG TARGETARCH
+COPY --from=ghcr.io/sigstore/cosign/cosign:v3.0.2@sha256:b29487e48205d875c324c79583e2806d9d269c0fa299e0861bbec023d8430c8b /ko-app/cosign /usr/local/bin/cosign
 RUN set -eu; \
+    case "${TARGETARCH}" in \
+      amd64|arm64) ;; \
+      *) echo "no ChairLift release archive for TARGETARCH '${TARGETARCH}'" >&2; exit 1 ;; \
+    esac; \
     version="${CHAIRLIFT_RELEASE#v}"; \
-    archive="/tmp/chairlift_${version}_linux_amd64.tar.gz"; \
-    curl --fail --silent --show-error --location --retry 5 --retry-all-errors --retry-delay 2 \
-      --output "$archive" \
-      "https://github.com/projectbluefin/chairlift/releases/download/${CHAIRLIFT_RELEASE}/chairlift_${version}_linux_amd64.tar.gz"; \
-    echo "18f630bb7de0e921ba12ae8c0650adf5e550b0cde203938d73d534382f196d08  $archive" | sha256sum -c -; \
-    install -d /tmp/chairlift /out/shared/usr/share/glib-2.0/schemas; \
+    archive="chairlift_${version}_linux_${TARGETARCH}.tar.gz"; \
+    install -d /tmp/chairlift-release; \
+    cd /tmp/chairlift-release; \
+    for asset in checksums.txt checksums.txt.sigstore.json "$archive"; do \
+      curl --fail --silent --show-error --location --retry 5 --retry-all-errors --retry-delay 2 \
+        --output "$asset" \
+        "https://github.com/projectbluefin/chairlift/releases/download/${CHAIRLIFT_RELEASE}/${asset}"; \
+    done; \
+    cosign verify-blob --bundle checksums.txt.sigstore.json \
+      --certificate-identity "https://github.com/projectbluefin/chairlift/.github/workflows/release.yml@refs/tags/${CHAIRLIFT_RELEASE}" \
+      --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+      checksums.txt; \
+    awk -v archive="$archive" 'NF == 2 && $2 == archive' checksums.txt > "$archive.sha256"; \
+    if [ "$(wc -l < "$archive.sha256")" -ne 1 ]; then \
+      echo "checksums.txt has no single entry for $archive" >&2; exit 1; \
+    fi; \
+    sha256sum -c "$archive.sha256"; \
+    install -d /tmp/chairlift; \
     tar -xzf "$archive" -C /tmp/chairlift \
+      chairlift-helper \
+      data/io.projectbluefin.chairlift.ublue.policy \
       data/io.projectbluefin.chairlift.livery.gschema.xml \
       data/io.projectbluefin.chairlift.updates.gschema.xml \
       data/io.projectbluefin.chairlift.firstrun.gschema.xml; \
-    install -m0644 /tmp/chairlift/data/*.gschema.xml /out/shared/usr/share/glib-2.0/schemas/
+    policy=/tmp/chairlift/data/io.projectbluefin.chairlift.ublue.policy; \
+    grep -qF '<annotate key="org.freedesktop.policykit.exec.path">/usr/bin/chairlift-helper</annotate>' "$policy"; \
+    if grep -F 'org.freedesktop.policykit.exec.path' "$policy" | grep -vqF '>/usr/bin/chairlift-helper<'; then \
+      echo "ChairLift policy authorizes a helper other than /usr/bin/chairlift-helper" >&2; exit 1; \
+    fi; \
+    install -Dm0755 /tmp/chairlift/chairlift-helper /out/shared/usr/bin/chairlift-helper; \
+    install -Dm0644 "$policy" /out/shared/usr/share/polkit-1/actions/io.projectbluefin.chairlift.ublue.policy; \
+    install -Dm0644 /tmp/chairlift/data/io.projectbluefin.chairlift.livery.gschema.xml /out/shared/usr/share/glib-2.0/schemas/io.projectbluefin.chairlift.livery.gschema.xml; \
+    install -Dm0644 /tmp/chairlift/data/io.projectbluefin.chairlift.updates.gschema.xml /out/shared/usr/share/glib-2.0/schemas/io.projectbluefin.chairlift.updates.gschema.xml; \
+    install -Dm0644 /tmp/chairlift/data/io.projectbluefin.chairlift.firstrun.gschema.xml /out/shared/usr/share/glib-2.0/schemas/io.projectbluefin.chairlift.firstrun.gschema.xml
 
 # Artwork repo points to ~/.local/share for metadata
 RUN mkdir -p /out/bluefin/usr/share/backgrounds/bluefin && \
