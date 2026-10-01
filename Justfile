@@ -49,6 +49,7 @@ test:
     bats tests/test_suite_registration.bats
     bats tests/test_shared_just.bats
     bats tests/test_escl_fixture.bats
+    bats tests/test_pwquality.bats
     bats tests/test_projectbluefin_countme.bats
 
 # Preview Bazaar config from this checkout on the local machine
