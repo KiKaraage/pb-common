@@ -161,6 +161,26 @@
       "doc_type": "reference"
     },
     {
+      "id": "contribute",
+      "name": "contribute",
+      "one_line_purpose": "Operate the ujust contribute podman alias for the Hive contributor appliance.",
+      "entry_point": "docs/skills/contribute.md",
+      "category": "ci-ops",
+      "status": "active",
+      "tags": [
+        "contribute",
+        "hive",
+        "podman",
+        "krun",
+        "gvisor",
+        "just"
+      ],
+      "description": "ujust contribute aliases to a podman-run invocation of projectbluefin/contribute defaulting to the projectbluefin Hive. Use when working on the recipe, its isolation-tier warning, or its resource limits.",
+      "version": "1.0",
+      "last_updated": "2026-09-27",
+      "doc_type": "reference"
+    },
+    {
       "id": "dconf-consistency",
       "name": "dconf-consistency",
       "one_line_purpose": "Keep GSettings overrides and dconf lock files in parity.",

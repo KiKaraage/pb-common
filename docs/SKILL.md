@@ -56,6 +56,7 @@ repository's local catalog with `docs/skills/hive.md` as the preflight guard.
 | Write or test shell scripts | [`shell-scripts/SKILL.md`](skills/shell-scripts/SKILL.md) |
 | Work on brew / preinstall packages | [`brew-lifecycle/SKILL.md`](skills/brew-lifecycle/SKILL.md) |
 | Work on `ujust devmode` | [`devmode.md`](skills/devmode.md) |
+| Work on `ujust contribute` (Hive contributor podman appliance) | [`contribute.md`](skills/contribute.md) |
 | Work with bootc | [`bootc.md`](skills/bootc.md) |
 | Work with NVIDIA GPU support | [`nvidia/SKILL.md`](skills/nvidia/SKILL.md) |
 | Add or gate a GPU vendor toolkit (AMD, Intel) | [`gpu-toolkit-interface.md`](skills/gpu-toolkit-interface.md) |
